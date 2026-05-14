@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>웹 타이머 v.1.0</title>
+
+    <title>WEB Timer v1.0</title>
 
     <style>
         * {
@@ -13,21 +15,29 @@
         body {
             margin: 0;
             height: 100vh;
+
             display: flex;
             justify-content: center;
             align-items: center;
+
             background: #1e1e1e;
+
             font-family: Arial, sans-serif;
             color: white;
         }
 
         .container {
             width: 360px;
+
             padding: 30px;
+
             border-radius: 20px;
+
             background: #2c2c2c;
+
             text-align: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.4);
+
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
         }
 
         h1 {
@@ -37,7 +47,9 @@
 
         .time-inputs {
             display: flex;
+
             gap: 10px;
+
             margin-bottom: 24px;
         }
 
@@ -47,43 +59,62 @@
 
         .time-box label {
             display: block;
+
             margin-bottom: 8px;
+
             font-size: 14px;
+
             color: #cccccc;
         }
 
         .time-box input {
             width: 100%;
+
             padding: 12px;
+
             font-size: 20px;
+
             text-align: center;
+
             border: none;
             border-radius: 10px;
+
             background: #444;
+
             color: white;
         }
 
         .timer-display {
             font-size: 64px;
+
             font-weight: bold;
+
             margin-bottom: 28px;
+
             letter-spacing: 2px;
         }
 
         .buttons {
             display: flex;
+
             gap: 10px;
         }
 
         button {
             flex: 1;
+
             padding: 14px;
+
             border: none;
             border-radius: 12px;
+
             font-size: 16px;
             font-weight: bold;
+
             color: white;
+
             cursor: pointer;
+
             transition:
                 transform 0.1s ease,
                 opacity 0.2s ease,
@@ -100,17 +131,23 @@
 
         .start-btn {
             background: #4caf50;
-            box-shadow: 0 4px 12px rgba(76,175,80,0.4);
+
+            box-shadow:
+                0 4px 12px rgba(76, 175, 80, 0.4);
         }
 
         .pause-btn {
             background: #ff9800;
-            box-shadow: 0 4px 12px rgba(255,152,0,0.4);
+
+            box-shadow:
+                0 4px 12px rgba(255, 152, 0, 0.4);
         }
 
         .reset-btn {
             background: #f44336;
-            box-shadow: 0 4px 12px rgba(244,67,54,0.4);
+
+            box-shadow:
+                0 4px 12px rgba(244, 67, 54, 0.4);
         }
 
         .finished {
@@ -118,192 +155,290 @@
         }
 
         @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 1;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<div class="container">
-    <h1>WEB Timer v.1.0</h1>
+    <div class="container">
 
-    <div class="time-inputs">
-        <div class="time-box">
-            <label>시</label>
-            <input type="number" id="hours" min="0" value="0">
+        <h1>WEB Timer v1.0</h1>
+
+        <div class="time-inputs">
+
+            <div class="time-box">
+                <label>시</label>
+
+                <input
+                    type="number"
+                    id="hours"
+                    min="0"
+                    value="0">
+            </div>
+
+            <div class="time-box">
+                <label>분</label>
+
+                <input
+                    type="number"
+                    id="minutes"
+                    min="0"
+                    max="59"
+                    value="0">
+            </div>
+
+            <div class="time-box">
+                <label>초</label>
+
+                <input
+                    type="number"
+                    id="seconds"
+                    min="0"
+                    max="59"
+                    value="0">
+            </div>
+
         </div>
 
-        <div class="time-box">
-            <label>분</label>
-            <input type="number" id="minutes" min="0" max="59" value="0">
+        <div
+            class="timer-display"
+            id="timerDisplay">
+
+            00:00:00
+
         </div>
 
-        <div class="time-box">
-            <label>초</label>
-            <input type="number" id="seconds" min="0" max="59" value="0">
+        <div class="buttons">
+
+            <button
+                class="start-btn"
+                onclick="startTimer()">
+
+                Start
+
+            </button>
+
+            <button
+                class="pause-btn"
+                onclick="pauseTimer()">
+
+                Pause
+
+            </button>
+
+            <button
+                class="reset-btn"
+                onclick="resetTimer()">
+
+                Reset
+
+            </button>
+
         </div>
+
     </div>
 
-    <div class="timer-display" id="timerDisplay">
-        00:00:00
-    </div>
+    <script>
 
-    <div class="buttons">
-        <button class="start-btn" onclick="startTimer()">
-            Start
-        </button>
+        let timerId = null;
 
-        <button class="pause-btn" onclick="pauseTimer()">
-            Pause
-        </button>
+        let remainingTime = 0;
 
-        <button class="reset-btn" onclick="resetTimer()">
-            Reset
-        </button>
-    </div>
-</div>
+        const display =
+            document.getElementById("timerDisplay");
 
-<script>
-    let timerId = null;
-    let remainingTime = 0;
+        function formatTime(totalSeconds) {
 
-    const display = document.getElementById("timerDisplay");
+            const hours =
+                Math.floor(totalSeconds / 3600);
 
-    function formatTime(totalSeconds) {
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
+            const minutes =
+                Math.floor((totalSeconds % 3600) / 60);
 
-        return (
-            String(hours).padStart(2, "0") + ":" +
-            String(minutes).padStart(2, "0") + ":" +
-            String(seconds).padStart(2, "0")
-        );
-    }
+            const seconds =
+                totalSeconds % 60;
 
-    function updateDisplay() {
-        display.textContent = formatTime(remainingTime);
-    }
+            return (
+                String(hours).padStart(2, "0") + ":" +
+                String(minutes).padStart(2, "0") + ":" +
+                String(seconds).padStart(2, "0")
+            );
+        }
 
-    function getInputSeconds() {
-        const hours =
-            parseInt(document.getElementById("hours").value) || 0;
+        function updateDisplay() {
 
-        const minutes =
-            parseInt(document.getElementById("minutes").value) || 0;
+            display.textContent =
+                formatTime(remainingTime);
+        }
 
-        const seconds =
-            parseInt(document.getElementById("seconds").value) || 0;
+        function getInputSeconds() {
 
-        return (hours * 3600) + (minutes * 60) + seconds;
-    }
+            const hours =
+                parseInt(
+                    document.getElementById("hours").value
+                ) || 0;
 
-    function startTimer() {
+            const minutes =
+                parseInt(
+                    document.getElementById("minutes").value
+                ) || 0;
 
-        if (remainingTime === 0) {
-            remainingTime = getInputSeconds();
+            const seconds =
+                parseInt(
+                    document.getElementById("seconds").value
+                ) || 0;
 
-            if (remainingTime <= 0) {
-                alert("시간을 입력하세요.");
+            return (
+                (hours * 3600) +
+                (minutes * 60) +
+                seconds
+            );
+        }
+
+        function startTimer() {
+
+            if (remainingTime === 0) {
+
+                remainingTime =
+                    getInputSeconds();
+
+                if (remainingTime <= 0) {
+
+                    alert("시간을 입력하세요.");
+
+                    return;
+                }
+
+                updateDisplay();
+            }
+
+            if (timerId !== null) {
                 return;
             }
 
-            updateDisplay();
-        }
+            display.classList.remove("finished");
 
-        if (timerId !== null) {
-            return;
-        }
+            timerId = setInterval(() => {
 
-        display.classList.remove("finished");
-
-        timerId = setInterval(() => {
-
-            remainingTime--;
-
-            updateDisplay();
-
-            if (remainingTime <= 0) {
-
-                clearInterval(timerId);
-                timerId = null;
-
-                remainingTime = 0;
+                remainingTime--;
 
                 updateDisplay();
 
-                display.classList.add("finished");
+                if (remainingTime <= 0) {
 
-playAlarm();
+                    clearInterval(timerId);
 
-setTimeout(() => {
-     alert("시간이 종료되었습니다.");
-}, 500);
+                    timerId = null;
+
+                    remainingTime = 0;
+
+                    updateDisplay();
+
+                    display.classList.add("finished");
+
+                    // 알람 먼저 재생
+                    playAlarm();
+
+                    // Safari 대응:
+                    // 팝업을 약간 늦게 띄움
+                    setTimeout(() => {
+
+                        alert("시간이 종료되었습니다.");
+
+                    }, 300);
+                }
+
+            }, 1000);
+        }
+
+        function pauseTimer() {
+
+            clearInterval(timerId);
+
+            timerId = null;
+        }
+
+        function resetTimer() {
+
+            clearInterval(timerId);
+
+            timerId = null;
+
+            remainingTime = 0;
+
+            display.textContent = "00:00:00";
+
+            display.classList.remove("finished");
+        }
+
+        // Web Audio API 알람
+        function playAlarm() {
+
+            const audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+            // 5회 반복
+            for (let i = 0; i < 5; i++) {
+
+                const oscillator =
+                    audioContext.createOscillator();
+
+                const gainNode =
+                    audioContext.createGain();
+
+                oscillator.type = "sine";
+
+                oscillator.frequency.setValueAtTime(
+                    880,
+                    audioContext.currentTime
+                );
+
+                oscillator.connect(gainNode);
+
+                gainNode.connect(
+                    audioContext.destination
+                );
+
+                // 반복 간격
+                const startTime =
+                    audioContext.currentTime +
+                    (i * 0.1);
+
+                gainNode.gain.setValueAtTime(
+                    0.3,
+                    startTime
+                );
+
+                gainNode.gain.exponentialRampToValueAtTime(
+                    0.0001,
+                    startTime + 0.5
+                );
+
+                oscillator.start(startTime);
+
+                oscillator.stop(startTime + 0.5);
             }
+        }
 
-        }, 1000);
-    }
+        updateDisplay();
 
-    function pauseTimer() {
-        clearInterval(timerId);
-        timerId = null;
-    }
-
-    function resetTimer() {
-        clearInterval(timerId);
-        timerId = null;
-
-        remainingTime = 0;
-
-        display.textContent = "00:00:00";
-        display.classList.remove("finished");
-    }
-
-    // 알람 소리 생성
-    function playAlarm() {
-
-    const audioContext =
-        new (window.AudioContext || window.webkitAudioContext)();
-
-    // 3번 반복
-    for (let i = 0; i < 5; i++) {
-
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-
-        oscillator.type = "sine";
-
-        oscillator.frequency.setValueAtTime(
-            880,
-            audioContext.currentTime
-        );
-
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-
-        // 반복 간격 (0.7초 간격)
-        const startTime = audioContext.currentTime + (i * 0.1);
-
-        gainNode.gain.setValueAtTime(
-            0.3,
-            startTime
-        );
-
-        gainNode.gain.exponentialRampToValueAtTime(
-            0.0001,
-            startTime + 0.5
-        );
-
-        oscillator.start(startTime);
-        oscillator.stop(startTime + 0.5);
-    }
-}
-
-    updateDisplay();
-</script>
+    </script>
 
 </body>
+
 </html>

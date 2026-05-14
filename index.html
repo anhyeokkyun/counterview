@@ -27,17 +27,25 @@
         }
 
         .container {
-            width: 360px;
 
-            padding: 30px;
+            width: 90vw;
+            max-width: 1200px;
 
-            border-radius: 20px;
+            height: 90vh;
+
+            padding: 40px;
+
+            border-radius: 24px;
 
             background: #2c2c2c;
 
             text-align: center;
 
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         h1 {
@@ -46,11 +54,12 @@
         }
 
         .time-inputs {
+
             display: flex;
 
             gap: 10px;
 
-            margin-bottom: 24px;
+            margin-bottom: 10px;
         }
 
         .time-box {
@@ -85,13 +94,20 @@
         }
 
         .timer-display {
-            font-size: 64px;
+
+            flex: 1;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 12vw;
 
             font-weight: bold;
 
-            margin-bottom: 28px;
+            letter-spacing: 8px;
 
-            letter-spacing: 2px;
+            margin: 20px 0;
         }
 
         .buttons {
@@ -103,12 +119,12 @@
         button {
             flex: 1;
 
-            padding: 14px;
+            padding: 10px;
 
             border: none;
             border-radius: 12px;
 
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
 
             color: white;

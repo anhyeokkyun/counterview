@@ -351,10 +351,10 @@ window.firebaseOnValue = onValue;
             // 호스트만 업로드
             if (!isViewer) {
 
-                firebaseSet(
+                window.firebaseSet(
 
-                    firebaseRef(
-                        firebaseDB,
+                    window.firebaseRef(
+                        window.firebaseDB,
                         "sharedTimer/current"
                     ),
 
@@ -530,10 +530,10 @@ window.firebaseOnValue = onValue;
 
         if (isViewer) {
 
-            firebaseOnValue(
+            window.firebaseOnValue(
 
-                firebaseRef(
-                    firebaseDB,
+                window.firebaseRef(
+                    window.firebaseDB,
                     "sharedTimer/current"
                 ),
 

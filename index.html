@@ -184,48 +184,6 @@
             }
         }
     </style>
-<script type="module">
-
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-    getDatabase,
-    ref,
-    set,
-    onValue
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-  const firebaseConfig = {
-
-    apiKey: "AIzaSyDUVCjFa49SraSoyktPlnjAVsJIPc35yZM",
-
-    authDomain: "web-timer-rtbase.firebaseapp.com",
-
-    databaseURL: "https://web-timer-rtbase-default-rtdb.asia-southeast1.firebasedatabase.app",
-
-    projectId: "web-timer-rtbase",
-
-    storageBucket: "web-timer-rtbase.firebasestorage.app",
-
-    messagingSenderId: "528974092407",
-
-    appId: "1:528974092407:web:2b8c0429a9426399cf8e72"
-  };
-
-const app =
-    initializeApp(firebaseConfig);
-
-const db =
-    getDatabase(app);
-
-window.firebaseDB = db;
-window.firebaseRef = ref;
-window.firebaseSet = set;
-window.firebaseOnValue = onValue;
-
-</script>
 </head>
 
 <body>
@@ -237,17 +195,20 @@ window.firebaseOnValue = onValue;
         <div class="time-inputs">
 
             <div class="time-box">
-                <label>시</label>
+
+                <label for="hours">시</label>
 
                 <input
                     type="number"
                     id="hours"
                     min="0"
                     value="0">
+
             </div>
 
             <div class="time-box">
-                <label>분</label>
+
+                <label for="minutes">분</label>
 
                 <input
                     type="number"
@@ -255,10 +216,12 @@ window.firebaseOnValue = onValue;
                     min="0"
                     max="59"
                     value="0">
+
             </div>
 
             <div class="time-box">
-                <label>초</label>
+
+                <label for="seconds">초</label>
 
                 <input
                     type="number"
@@ -266,6 +229,7 @@ window.firebaseOnValue = onValue;
                     min="0"
                     max="59"
                     value="0">
+
             </div>
 
         </div>
@@ -282,7 +246,7 @@ window.firebaseOnValue = onValue;
 
             <button
                 class="start-btn"
-                onclick="startTimer()">
+                id="startBtn">
 
                 Start
 
@@ -290,7 +254,7 @@ window.firebaseOnValue = onValue;
 
             <button
                 class="pause-btn"
-                onclick="pauseTimer()">
+                id="pauseBtn">
 
                 Pause
 
@@ -298,7 +262,7 @@ window.firebaseOnValue = onValue;
 
             <button
                 class="reset-btn"
-                onclick="resetTimer()">
+                id="resetBtn">
 
                 Reset
 
@@ -308,151 +272,154 @@ window.firebaseOnValue = onValue;
 
     </div>
 
-    <script>
+<script type="module">
 
-        const params =
-            new URLSearchParams(window.location.search);
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-        const isViewer =
-            params.get("viewer") === "1";
+import {
+    getDatabase,
+    ref,
+    set,
+    onValue
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        let timerId = null;
+const firebaseConfig = {
 
-        let remainingTime = 0;
+    apiKey: "AIzaSyDUVCjFa49SraSoyktPlnjAVsJIPc35yZM",
 
-        const display =
-            document.getElementById("timerDisplay");
+    authDomain: "web-timer-rtbase.firebaseapp.com",
 
-        function formatTime(totalSeconds) {
+    databaseURL:
+        "https://web-timer-rtbase-default-rtdb.asia-southeast1.firebasedatabase.app",
 
-            const hours =
-                Math.floor(totalSeconds / 3600);
+    projectId: "web-timer-rtbase",
 
-            const minutes =
-                Math.floor((totalSeconds % 3600) / 60);
+    storageBucket:
+        "web-timer-rtbase.firebasestorage.app",
 
-            const seconds =
-                totalSeconds % 60;
+    messagingSenderId: "528974092407",
 
-            return (
-                String(hours).padStart(2, "0") + ":" +
-                String(minutes).padStart(2, "0") + ":" +
-                String(seconds).padStart(2, "0")
-            );
-        }
+    appId:
+        "1:528974092407:web:2b8c0429a9426399cf8e72"
+};
 
-        function updateDisplay() {
+const app =
+    initializeApp(firebaseConfig);
 
-            const formatted =
-                formatTime(remainingTime);
+const db =
+    getDatabase(app);
 
-            display.textContent = formatted;
+const params =
+    new URLSearchParams(window.location.search);
 
-            // 호스트만 업로드
-            if (!isViewer) {
+const isViewer =
+    params.get("viewer") === "1";
 
-                window.firebaseSet(
+let timerId = null;
 
-                    window.firebaseRef(
-                        window.firebaseDB,
-                        "sharedTimer/current"
-                    ),
+let remainingTime = 0;
 
-                    {
-                        time: formatted
-                    }
-                );
+const display =
+    document.getElementById("timerDisplay");
+
+function formatTime(totalSeconds) {
+
+    const hours =
+        Math.floor(totalSeconds / 3600);
+
+    const minutes =
+        Math.floor((totalSeconds % 3600) / 60);
+
+    const seconds =
+        totalSeconds % 60;
+
+    return (
+        String(hours).padStart(2, "0") + ":" +
+        String(minutes).padStart(2, "0") + ":" +
+        String(seconds).padStart(2, "0")
+    );
+}
+
+async function updateDisplay() {
+
+    const formatted =
+        formatTime(remainingTime);
+
+    display.textContent = formatted;
+
+    // 호스트만 Firebase 업로드
+    if (!isViewer) {
+
+        await set(
+
+            ref(
+                db,
+                "sharedTimer/current"
+            ),
+
+            {
+                time: formatted
             }
+        );
+    }
+}
+
+function getInputSeconds() {
+
+    const hours =
+        parseInt(
+            document.getElementById("hours").value
+        ) || 0;
+
+    const minutes =
+        parseInt(
+            document.getElementById("minutes").value
+        ) || 0;
+
+    const seconds =
+        parseInt(
+            document.getElementById("seconds").value
+        ) || 0;
+
+    return (
+        (hours * 3600) +
+        (minutes * 60) +
+        seconds
+    );
+}
+
+async function startTimer() {
+
+    if (remainingTime === 0) {
+
+        remainingTime =
+            getInputSeconds();
+
+        if (remainingTime <= 0) {
+
+            alert("시간을 입력하세요.");
+
+            return;
         }
 
-        function getInputSeconds() {
+        await updateDisplay();
+    }
 
-            const hours =
-                parseInt(
-                    document.getElementById("hours").value
-                ) || 0;
+    if (timerId !== null) {
+        return;
+    }
 
-            const minutes =
-                parseInt(
-                    document.getElementById("minutes").value
-                ) || 0;
+    display.classList.remove("finished");
 
-            const seconds =
-                parseInt(
-                    document.getElementById("seconds").value
-                ) || 0;
+    timerId = setInterval(async () => {
 
-            return (
-                (hours * 3600) +
-                (minutes * 60) +
-                seconds
-            );
-        }
+        remainingTime--;
 
-        function startTimer() {
+        await updateDisplay();
 
-            if (remainingTime === 0) {
-
-                remainingTime =
-                    getInputSeconds();
-
-                if (remainingTime <= 0) {
-
-                    alert("시간을 입력하세요.");
-
-                    return;
-                }
-
-                updateDisplay();
-            }
-
-            if (timerId !== null) {
-                return;
-            }
-
-            display.classList.remove("finished");
-
-            timerId = setInterval(() => {
-
-                remainingTime--;
-
-                updateDisplay();
-
-                if (remainingTime <= 0) {
-
-                    clearInterval(timerId);
-
-                    timerId = null;
-
-                    remainingTime = 0;
-
-                    updateDisplay();
-
-                    display.classList.add("finished");
-
-                    // 알람 먼저 재생
-                    playAlarm();
-
-                    // Safari 대응:
-                    // 팝업을 약간 늦게 띄움
-                    setTimeout(() => {
-
-                        alert("시간이 종료되었습니다.");
-
-                    }, 1000);
-                }
-
-            }, 1000);
-        }
-
-        function pauseTimer() {
-
-            clearInterval(timerId);
-
-            timerId = null;
-        }
-
-        function resetTimer() {
+        if (remainingTime <= 0) {
 
             clearInterval(timerId);
 
@@ -460,98 +427,151 @@ window.firebaseOnValue = onValue;
 
             remainingTime = 0;
 
-            display.textContent = "00:00:00";
+            await updateDisplay();
 
-            display.classList.remove("finished");
+            display.classList.add("finished");
+
+            playAlarm();
+
+            setTimeout(() => {
+
+                alert("시간이 종료되었습니다.");
+
+            }, 1000);
         }
 
-        // Web Audio API 알람
-        function playAlarm() {
+    }, 1000);
+}
 
-            const audioContext =
-                new (
-                    window.AudioContext ||
-                    window.webkitAudioContext
-                )();
+function pauseTimer() {
 
-            // 5회 반복
-            for (let i = 0; i < 5; i++) {
+    clearInterval(timerId);
 
-                const oscillator =
-                    audioContext.createOscillator();
+    timerId = null;
+}
 
-                const gainNode =
-                    audioContext.createGain();
+async function resetTimer() {
 
-                oscillator.type = "sine";
+    clearInterval(timerId);
 
-                oscillator.frequency.setValueAtTime(
-                    880,
-                    audioContext.currentTime
-                );
+    timerId = null;
 
-                oscillator.connect(gainNode);
+    remainingTime = 0;
 
-                gainNode.connect(
-                    audioContext.destination
-                );
+    display.textContent = "00:00:00";
 
-                // 반복 간격
-                const startTime =
-                    audioContext.currentTime +
-                    (i * 0.1);
+    display.classList.remove("finished");
 
-                gainNode.gain.setValueAtTime(
-                    0.3,
-                    startTime
-                );
+    await set(
 
-                gainNode.gain.exponentialRampToValueAtTime(
-                    0.0001,
-                    startTime + 0.5
-                );
+        ref(
+            db,
+            "sharedTimer/current"
+        ),
 
-                oscillator.start(startTime);
+        {
+            time: "00:00:00"
+        }
+    );
+}
 
-                oscillator.stop(startTime + 0.5);
+// Web Audio API 알람
+function playAlarm() {
+
+    const audioContext =
+        new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+
+    for (let i = 0; i < 5; i++) {
+
+        const oscillator =
+            audioContext.createOscillator();
+
+        const gainNode =
+            audioContext.createGain();
+
+        oscillator.type = "sine";
+
+        oscillator.frequency.setValueAtTime(
+            880,
+            audioContext.currentTime
+        );
+
+        oscillator.connect(gainNode);
+
+        gainNode.connect(
+            audioContext.destination
+        );
+
+        const startTime =
+            audioContext.currentTime +
+            (i * 0.1);
+
+        gainNode.gain.setValueAtTime(
+            0.3,
+            startTime
+        );
+
+        gainNode.gain.exponentialRampToValueAtTime(
+            0.0001,
+            startTime + 0.5
+        );
+
+        oscillator.start(startTime);
+
+        oscillator.stop(startTime + 0.5);
+    }
+}
+
+// 버튼 이벤트 연결
+document
+    .getElementById("startBtn")
+    .addEventListener("click", startTimer);
+
+document
+    .getElementById("pauseBtn")
+    .addEventListener("click", pauseTimer);
+
+document
+    .getElementById("resetBtn")
+    .addEventListener("click", resetTimer);
+
+// 초기 화면
+updateDisplay();
+
+// 시청자 모드
+if (isViewer) {
+
+    document.querySelector(".buttons")
+        .style.display = "none";
+
+    document.querySelector(".time-inputs")
+        .style.display = "none";
+
+    onValue(
+
+        ref(
+            db,
+            "sharedTimer/current"
+        ),
+
+        (snapshot) => {
+
+            const data =
+                snapshot.val();
+
+            if (data && data.time) {
+
+                display.textContent =
+                    data.time;
             }
         }
+    );
+}
 
-        updateDisplay();
-
-        if (isViewer) {
-
-            document.querySelector(".buttons")
-                .style.display = "none";
-
-            document.querySelector(".time-inputs")
-                .style.display = "none";
-        }
-
-        if (isViewer) {
-
-            window.firebaseOnValue(
-
-                window.firebaseRef(
-                    window.firebaseDB,
-                    "sharedTimer/current"
-                ),
-
-                (snapshot) => {
-
-                    const data =
-                        snapshot.val();
-
-                    if (data && data.time) {
-
-                        display.textContent =
-                            data.time;
-                    }
-                }
-            );
-        }
-
-        </script>
+</script>
 
 </body>
 

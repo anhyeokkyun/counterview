@@ -170,6 +170,31 @@
             animation: blink 1s infinite;
         }
 
+        #midAlertMessage {
+
+            height: 40px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 28px;
+            font-weight: bold;
+
+            color: #ffd54f;
+
+            opacity: 0;
+
+            transition: opacity 0.3s ease;
+        }
+
+        #midAlertMessage.show {
+
+    opacity: 1;
+
+    animation: blink 1s infinite;
+}
+
         @keyframes blink {
             0% {
                 opacity: 1;
@@ -234,6 +259,54 @@
 
         </div>
 
+        <div class="time-inputs mid-alert-inputs">
+
+            <div class="time-box">
+
+                <label for="alertHours">
+                    중간알림 시
+                </label>
+
+                <input
+                    type="number"
+                    id="alertHours"
+                    min="0"
+                    value="0">
+
+            </div>
+
+            <div class="time-box">
+
+                <label for="alertMinutes">
+                    중간알림 분
+                </label>
+
+                <input
+                    type="number"
+                    id="alertMinutes"
+                    min="0"
+                    max="59"
+                    value="0">
+
+            </div>
+
+            <div class="time-box">
+
+                <label for="alertSeconds">
+                    중간알림 초
+                </label>
+
+                <input
+                    type="number"
+                    id="alertSeconds"
+                    min="0"
+                    max="59"
+                    value="0">
+
+            </div>
+
+        </div>
+
         <div
             class="timer-display"
             id="timerDisplay">
@@ -241,6 +314,8 @@
             00:00:00
 
         </div>
+
+        <div id="midAlertMessage"></div>
 
         <div class="buttons">
 
@@ -321,6 +396,10 @@ let timerId = null;
 
 let remainingTime = 0;
 
+let midAlertTime = 0;
+
+let midAlertTriggered = false;
+
 const display =
     document.getElementById("timerDisplay");
 
@@ -390,12 +469,41 @@ function getInputSeconds() {
     );
 }
 
+function getMidAlertSeconds() {
+
+    const hours =
+        parseInt(
+            document.getElementById("alertHours").value
+        ) || 0;
+
+    const minutes =
+        parseInt(
+            document.getElementById("alertMinutes").value
+        ) || 0;
+
+    const seconds =
+        parseInt(
+            document.getElementById("alertSeconds").value
+        ) || 0;
+
+    return (
+        (hours * 3600) +
+        (minutes * 60) +
+        seconds
+    );
+}
+
 async function startTimer() {
 
     if (remainingTime === 0) {
 
         remainingTime =
             getInputSeconds();
+
+        midAlertTime =
+            getMidAlertSeconds();
+
+        midAlertTriggered = false;
 
         if (remainingTime <= 0) {
 
@@ -416,6 +524,37 @@ async function startTimer() {
     timerId = setInterval(async () => {
 
         remainingTime--;
+
+        // 중간 알림
+        if (
+            !midAlertTriggered &&
+            midAlertTime > 0 &&
+            remainingTime === midAlertTime
+        ) {
+
+            midAlertTriggered = true;
+
+            playAlarm();
+
+            const message =
+                document.getElementById(
+                    "midAlertMessage"
+                );
+
+            message.textContent =
+                "중간 알림 시간이 지났습니다.";
+
+            message.classList.add("show");
+
+            // 5초 후 자동 제거
+            setTimeout(() => {
+
+                message.classList.remove("show");
+
+                message.textContent = "";
+
+            }, 5000);
+        }
 
         await updateDisplay();
 
@@ -457,6 +596,10 @@ async function resetTimer() {
     timerId = null;
 
     remainingTime = 0;
+
+    midAlertTime = 0;
+
+    midAlertTriggered = false;
 
     display.textContent = "00:00:00";
 

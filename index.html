@@ -400,6 +400,8 @@ let midAlertTime = 0;
 
 let midAlertTriggered = false;
 
+let viewerMidAlertShown = false;
+
 const display =
     document.getElementById("timerDisplay");
 
@@ -431,17 +433,20 @@ async function updateDisplay() {
     // 호스트만 Firebase 업로드
     if (!isViewer) {
 
-        await set(
+       await set(
 
-            ref(
-                db,
-                "sharedTimer/current"
-            ),
+           ref(
+               db,
+               "sharedTimer/current"
+           ),
 
-            {
-                time: formatted
-            }
-        );
+           {
+               time: formatted,
+
+               midAlert:
+                   midAlertTriggered
+           }
+       );
     }
 }
 
@@ -713,6 +718,35 @@ if (isViewer) {
 
                 display.textContent =
                     data.time;
+
+                // 중간 알림 표시
+                if (data.midAlert) {
+
+                    const message =
+                        document.getElementById(
+                            "midAlertMessage"
+                        );
+
+                    message.textContent =
+                        "중간 알림 시간이 지났습니다.";
+
+                    message.classList.add("show");
+
+                    setTimeout(() => {
+
+                        message.classList.remove("show");
+
+                        message.textContent = "";
+
+                    }, 5000);
+                }
+
+
+                // 다음 알림 대비 초기화
+                if (!data.midAlert) {
+
+                    viewerMidAlertShown = false;
+                }
             }
         }
     );

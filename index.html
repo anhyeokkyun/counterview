@@ -184,6 +184,48 @@
             }
         }
     </style>
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+    getDatabase,
+    ref,
+    set,
+    onValue
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+
+    apiKey: "AIzaSyDUVCjFa49SraSoyktPlnjAVsJIPc35yZM",
+
+    authDomain: "web-timer-rtbase.firebaseapp.com",
+
+    databaseURL: "https://web-timer-rtbase-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+    projectId: "web-timer-rtbase",
+
+    storageBucket: "web-timer-rtbase.firebasestorage.app",
+
+    messagingSenderId: "528974092407",
+
+    appId: "1:528974092407:web:2b8c0429a9426399cf8e72"
+  };
+
+const app =
+    initializeApp(firebaseConfig);
+
+const db =
+    getDatabase(app);
+
+window.firebaseDB = db;
+window.firebaseRef = ref;
+window.firebaseSet = set;
+window.firebaseOnValue = onValue;
+
+</script>
 </head>
 
 <body>
@@ -268,6 +310,12 @@
 
     <script>
 
+        const params =
+            new URLSearchParams(window.location.search);
+
+        const isViewer =
+            params.get("viewer") === "1";
+
         let timerId = null;
 
         let remainingTime = 0;
@@ -295,8 +343,26 @@
 
         function updateDisplay() {
 
-            display.textContent =
+            const formatted =
                 formatTime(remainingTime);
+
+            display.textContent = formatted;
+
+            // 호스트만 업로드
+            if (!isViewer) {
+
+                firebaseSet(
+
+                    firebaseRef(
+                        firebaseDB,
+                        "sharedTimer/current"
+                    ),
+
+                    {
+                        time: formatted
+                    }
+                );
+            }
         }
 
         function getInputSeconds() {
@@ -453,7 +519,39 @@
 
         updateDisplay();
 
-    </script>
+        if (isViewer) {
+
+            document.querySelector(".buttons")
+                .style.display = "none";
+
+            document.querySelector(".time-inputs")
+                .style.display = "none";
+        }
+
+        if (isViewer) {
+
+            firebaseOnValue(
+
+                firebaseRef(
+                    firebaseDB,
+                    "sharedTimer/current"
+                ),
+
+                (snapshot) => {
+
+                    const data =
+                        snapshot.val();
+
+                    if (data && data.time) {
+
+                        display.textContent =
+                            data.time;
+                    }
+                }
+            );
+        }
+
+        </script>
 
 </body>
 

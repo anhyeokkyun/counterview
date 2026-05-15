@@ -690,8 +690,12 @@ if (isViewer) {
     document.querySelector(".buttons")
         .style.display = "none";
 
-    document.querySelector(".time-inputs")
-        .style.display = "none";
+    document
+        .querySelectorAll(".time-inputs")
+        .forEach((element) => {
+
+            element.style.display = "none";
+        });
 
     onValue(
 

@@ -392,6 +392,9 @@ const params =
 const isViewer =
     params.get("viewer") === "1";
 
+const roomId =
+    params.get("room") || "default";
+
 let timerId = null;
 
 let remainingTime = 0;
@@ -437,7 +440,7 @@ async function updateDisplay() {
 
            ref(
                db,
-               "sharedTimer/current"
+               `sharedTimer/${roomId}/current`
            ),
 
            {
@@ -614,7 +617,7 @@ async function resetTimer() {
 
         ref(
             db,
-            "sharedTimer/current"
+            `sharedTimer/${roomId}/current`
         ),
 
         {
@@ -769,7 +772,7 @@ if (isViewer) {
 
         ref(
             db,
-            "sharedTimer/current"
+            `sharedTimer/${roomId}/current`
         ),
 
         (snapshot) => {

@@ -19,7 +19,7 @@
 
         width: 100vw;
 
-        height: 100dvh;
+        min-height: 100dvh;
 
         overflow-x: hidden;
 
@@ -29,7 +29,7 @@
 
         justify-content: center;
 
-        align-items: center;
+        align-items: flex-start;
 
         background: #1e1e1e;
 
@@ -63,6 +63,10 @@
         overflow-x: hidden;
 
         overflow-y: auto;
+        
+        padding-left: max(6px, env(safe-area-inset-left));
+    
+        padding-right: max(6px, env(safe-area-inset-right));
     }
 
     h1 {

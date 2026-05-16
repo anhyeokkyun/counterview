@@ -623,14 +623,14 @@ async function resetTimer() {
     );
 }
 
+const audioContext =
+    new (
+        window.AudioContext ||
+        window.webkitAudioContext
+    )();
+
 // Web Audio API 알람
 function playAlarm() {
-
-    const audioContext =
-        new (
-            window.AudioContext ||
-            window.webkitAudioContext
-        )();
 
     for (let i = 0; i < 5; i++) {
 

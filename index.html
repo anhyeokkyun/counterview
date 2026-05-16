@@ -198,11 +198,49 @@
 
         #midAlertMessage.show {
 
-    opacity: 1;
+            opacity: 1;
 
-    animation: blink 1s infinite;
-}
+            animation: blink 1s infinite;
+        }
 
+        #roomTitle {
+
+            font-size: clamp(
+                18px,
+                2vw,
+                32px
+            );
+
+            font-weight: bold;
+
+            margin-bottom: 10px;
+
+            color: #ffd54f;
+        }
+
+        .room-title-input-wrap {
+
+            margin-bottom: 12px;
+        }
+
+        #roomTitleInput {
+
+            width: 100%;
+
+            padding: 10px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #444;
+
+            color: white;
+
+            font-size: 16px;
+
+            text-align: center;
+        }
         @keyframes blink {
             0% {
                 opacity: 1;
@@ -286,6 +324,19 @@
     <div class="container">
 
         <h1>WEB Timer v1.0</h1>
+
+        <div id="roomTitle">
+            Room Title
+        </div>
+
+        <div class="room-title-input-wrap">
+
+            <input
+                type="text"
+                id="roomTitleInput"
+                placeholder="페이지 제목 입력">
+
+        </div>
 
         <div class="time-inputs">
 
@@ -478,6 +529,14 @@ let viewerMidAlertShown = false;
 const display =
     document.getElementById("timerDisplay");
 
+const roomTitle =
+    document.getElementById("roomTitle");
+
+const roomTitleInput =
+    document.getElementById(
+        "roomTitleInput"
+    );
+
 function formatTime(totalSeconds) {
 
     const hours =
@@ -496,6 +555,26 @@ function formatTime(totalSeconds) {
     );
 }
 
+async function updateRoomTitle(title) {
+
+    roomTitle.textContent = title;
+
+    if (!isViewer) {
+
+        await set(
+
+            ref(
+                db,
+                `sharedTimer/${roomId}/roomTitle`
+            ),
+
+            {
+                text: title
+            }
+        );
+    }
+}
+    
 async function updateDisplay() {
 
     const formatted =
@@ -822,14 +901,55 @@ document
     .getElementById("resetBtn")
     .addEventListener("click", resetTimer);
 
+roomTitleInput.addEventListener(
+
+    "input",
+
+    async (event) => {
+
+        await updateRoomTitle(
+            event.target.value
+        );
+    }
+);
+
 // 초기 화면
 updateDisplay();
+
+onValue(
+
+    ref(
+        db,
+        `sharedTimer/${roomId}/roomTitle`
+    ),
+
+    (snapshot) => {
+
+        const data =
+            snapshot.val();
+
+        if (
+            data &&
+            data.text
+        ) {
+
+            roomTitle.textContent =
+                data.text;
+        }
+    }
+);
 
 // 시청자 모드
 if (isViewer) {
 
     document.querySelector(".buttons")
         .style.display = "none";
+
+    document
+    .querySelector(
+        ".room-title-input-wrap"
+    )
+    .style.display = "none";
 
     document
         .querySelectorAll(".time-inputs")

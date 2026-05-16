@@ -38,13 +38,13 @@
 
     .container {
 
-        width: min(94vw, 1600px);
+        width: min(96vw, 1800px);
 
         height: 100dvh;
 
-        padding: 12px;
+        padding: 6px;
 
-        border-radius: 20px;
+        border-radius: 16px;
 
         background: #2c2c2c;
 
@@ -56,7 +56,7 @@
 
         flex-direction: column;
 
-        gap: 6px;
+        gap: 2px;
 
         overflow: hidden;
     }
@@ -65,40 +65,46 @@
 
         margin: 0;
 
-        font-size: clamp(18px, 2vw, 42px);
+        line-height: 1;
+
+        font-size: clamp(14px, 1.2vw, 28px);
     }
 
     #roomTitle {
 
-        font-size: clamp(24px, 2.4vw, 48px);
+        font-size: clamp(18px, 1.8vw, 36px);
 
         font-weight: bold;
 
         color: #ffd54f;
 
         margin: 0;
+
+        line-height: 1;
     }
 
     .room-title-input-wrap {
 
         flex-shrink: 0;
+
+        margin: 0;
     }
 
     #roomTitleInput {
 
         width: 100%;
 
-        padding: 12px;
+        padding: 6px;
 
         border: none;
 
-        border-radius: 12px;
+        border-radius: 10px;
 
         background: #444;
 
         color: white;
 
-        font-size: clamp(14px, 1.4vw, 24px);
+        font-size: clamp(12px, 1vw, 18px);
 
         text-align: center;
     }
@@ -107,9 +113,9 @@
 
         border: 2px solid #555;
 
-        border-radius: 16px;
+        border-radius: 14px;
 
-        padding: 12px;
+        padding: 6px;
 
         background: #3a3a3a;
 
@@ -118,15 +124,17 @@
 
     .section-title {
 
-        font-size: clamp(18px, 1.8vw, 34px);
+        font-size: clamp(14px, 1.2vw, 24px);
 
         font-weight: bold;
 
-        margin-bottom: 8px;
+        margin-bottom: 4px;
 
         color: #ffd54f;
 
         text-align: left;
+
+        line-height: 1;
     }
 
     .time-inputs {
@@ -145,9 +153,9 @@
 
         display: block;
 
-        margin-bottom: 6px;
+        margin-bottom: 2px;
 
-        font-size: clamp(14px, 1vw, 22px);
+        font-size: clamp(10px, 0.8vw, 16px);
 
         color: #cccccc;
     }
@@ -156,15 +164,15 @@
 
         width: 100%;
 
-        padding: 12px;
+        padding: 6px;
 
-        font-size: clamp(18px, 1.4vw, 30px);
+        font-size: clamp(14px, 1vw, 22px);
 
         text-align: center;
 
         border: none;
 
-        border-radius: 12px;
+        border-radius: 10px;
 
         background: #444;
 
@@ -173,7 +181,7 @@
 
     .timer-display {
 
-        flex: 1;
+        flex: 1 1 auto;
 
         min-height: 0;
 
@@ -185,20 +193,20 @@
 
         overflow: hidden;
 
-        font-size: min(14vw, 220px);
+        font-size: min(18vw, 420px);
 
         font-weight: bold;
 
-        letter-spacing: 2px;
+        letter-spacing: 1px;
 
-        line-height: 1;
+        line-height: 0.9;
 
-        margin: 0;
+        margin: -8px 0;
     }
 
     #midAlertMessage {
 
-        height: 22px;
+        height: 14px;
 
         display: flex;
 
@@ -206,7 +214,7 @@
 
         align-items: center;
 
-        font-size: 14px;
+        font-size: 10px;
 
         font-weight: bold;
 
@@ -217,6 +225,8 @@
         transition: opacity 0.3s ease;
 
         flex-shrink: 0;
+
+        margin: 0;
     }
 
     #midAlertMessage.show {
@@ -230,7 +240,7 @@
 
         display: flex;
 
-        gap: 12px;
+        gap: 6px;
 
         flex-shrink: 0;
     }
@@ -239,13 +249,13 @@
 
         flex: 1;
 
-        padding: 12px;
+        padding: 6px;
 
         border: none;
 
-        border-radius: 12px;
+        border-radius: 10px;
 
-        font-size: clamp(14px, 1.2vw, 24px);
+        font-size: clamp(12px, 0.9vw, 18px);
 
         font-weight: bold;
 
@@ -273,7 +283,7 @@
 
         display: flex;
 
-        gap: 12px;
+        gap: 6px;
 
         flex-shrink: 0;
     }
@@ -282,22 +292,22 @@
 
         flex: 1;
 
-        padding: 12px;
+        padding: 6px;
 
         border: none;
 
-        border-radius: 12px;
+        border-radius: 10px;
 
         background: #444;
 
         color: white;
 
-        font-size: clamp(12px, 1vw, 20px);
+        font-size: clamp(10px, 0.8vw, 16px);
     }
 
     #copyLinkBtn {
 
-        padding: 14px 20px;
+        padding: 6px 12px;
 
         border: none;
 
@@ -307,11 +317,9 @@
 
         color: white;
 
-        font-size: 20px;
+        font-size: clamp(11px, 0.9vw, 18px);
 
         font-weight: bold;
-
-        font-size: clamp(14px, 1.2vw, 24px);
     }
 
     .finished {

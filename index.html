@@ -40,7 +40,7 @@
 
         width: 96vw;
 
-        max-width: 1600px;
+        max-width: 2200px;
 
         height: 100dvh;
 
@@ -111,7 +111,7 @@
 
     .time-section {
 
-        padding: 6px;
+        padding: 14px;
 
         background: #3a3a3a;
 
@@ -164,7 +164,7 @@
 
         padding: 14px;
 
-        font-size: 28px;
+        font-size: clamp(18px, 1.6vw, 34px);
 
         text-align: center;
 
@@ -234,7 +234,7 @@
 
         display: flex;
 
-        gap: 6px;
+        gap: 12px;
 
         flex-shrink: 0;
     }
@@ -249,7 +249,7 @@
 
         border-radius: 12px;
 
-        font-size: 22px;
+        font-size: clamp(16px, 1.5vw, 28px);
 
         font-weight: bold;
 
@@ -277,7 +277,7 @@
 
         display: flex;
 
-        gap: 6px;
+        gap: 12px;
 
         flex-shrink: 0;
     }
@@ -296,7 +296,7 @@
 
         color: white;
 
-        font-size: 20px;
+        font-size: clamp(14px, 1.2vw, 24px);
     }
 
     #copyLinkBtn {
@@ -314,6 +314,8 @@
         font-size: 20px;
 
         font-weight: bold;
+
+        font-size: clamp(14px, 1.2vw, 24px);
     }
 
     .finished {
@@ -337,7 +339,7 @@
     }
 
     /* 모바일 가로모드 대응 */
-    @media screen and (orientation: landscape) {
+    @media screen and (max-width: 900px) and (orientation: landscape)
 
         .container {
 

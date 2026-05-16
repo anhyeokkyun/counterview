@@ -65,12 +65,12 @@
 
         margin: 0;
 
-        font-size: clamp(16px, 2vw, 36px);
+        font-size: clamp(18px, 2vw, 42px);
     }
 
     #roomTitle {
 
-        font-size: clamp(18px, 2.2vw, 38px);
+        font-size: clamp(24px, 2.4vw, 48px);
 
         font-weight: bold;
 
@@ -118,7 +118,7 @@
 
     .section-title {
 
-        font-size: clamp(16px, 1.8vw, 30px);
+        font-size: clamp(18px, 1.8vw, 34px);
 
         font-weight: bold;
 
@@ -147,7 +147,7 @@
 
         margin-bottom: 6px;
 
-        font-size: clamp(12px, 1.2vw, 22px);
+        font-size: clamp(14px, 1vw, 22px);
 
         color: #cccccc;
     }
@@ -158,7 +158,7 @@
 
         padding: 12px;
 
-        font-size: clamp(16px, 1.6vw, 28px);
+        font-size: clamp(18px, 1.4vw, 30px);
 
         text-align: center;
 
@@ -245,7 +245,7 @@
 
         border-radius: 12px;
 
-        font-size: clamp(13px, 1.2vw, 24px);
+        font-size: clamp(14px, 1.2vw, 24px);
 
         font-weight: bold;
 
@@ -334,8 +334,7 @@
         }
     }
 
-    /* 모바일 가로모드 대응 */
-    @media screen and (max-width: 900px) and (orientation: landscape)
+    @media screen and (orientation: landscape) {
 
         .container {
 
@@ -347,18 +346,27 @@
         h1 {
 
             font-size: 12px;
+
+            margin: 0;
         }
 
         #roomTitle {
 
-            font-size: 13px;
+            font-size: 12px;
+
+            margin: 0;
+        }
+
+        .room-title-input-wrap {
+
+            margin: 0;
         }
 
         #roomTitleInput {
 
             padding: 3px;
 
-            font-size: 11px;
+            font-size: 10px;
         }
 
         .time-section {
@@ -368,7 +376,7 @@
 
         .section-title {
 
-            font-size: 12px;
+            font-size: 11px;
 
             margin-bottom: 2px;
         }
@@ -387,123 +395,22 @@
 
         .time-box input {
 
-            padding: 2px;
+            padding: 3px;
 
-            font-size: 11px;
+            font-size: 10px;
         }
 
         .timer-display {
 
-            font-size: clamp(42px, 10vw, 140px);
+            flex: 1;
 
             min-height: 0;
-        }
 
-        #midAlertMessage {
+            font-size: min(8vw, 56px);
 
-            height: 16px;
+            line-height: 1;
 
-            font-size: 12px;
-        }
-
-        button {
-
-            padding: 5px;
-
-            font-size: 10px;
-        }
-
-        #viewerLink {
-
-            padding: 5px;
-
-            font-size: 10px;
-        }
-
-        #copyLinkBtn {
-
-            padding: 5px 8px;
-
-            font-size: 10px;
-        }
-    }
-
-    @media screen and (max-height: 500px) and (orientation: landscape) {
-
-        .container {
-
-            padding: 4px;
-
-            gap: 2px;
-        }
-
-        h1 {
-
-            font-size: 12px;
-        }
-
-        #roomTitle {
-
-            font-size: 12px;
-        }
-
-        #roomTitleInput {
-
-            padding: 3px;
-
-            font-size: 10px;
-        }
-
-        .time-section {
-
-            padding: 4px;
-        }
-
-        .section-title {
-
-            font-size: 11px;
-
-            margin-bottom: 2px;
-        }
-
-        .time-box label {
-
-            font-size: 9px;
-
-            margin-bottom: 1px;
-        }
-
-        .time-box input {
-
-            padding: 3px;
-
-            font-size: 10px;
-        }
-
-        .timer-display {
-
-            font-size: min(11vw, 80px);
-        }
-
-        button {
-
-            padding: 5px;
-
-            font-size: 10px;
-        }
-
-        #viewerLink {
-
-            padding: 5px;
-
-            font-size: 10px;
-        }
-
-        #copyLinkBtn {
-
-            padding: 5px 8px;
-
-            font-size: 10px;
+            overflow: hidden;
         }
 
         #midAlertMessage {
@@ -511,6 +418,37 @@
             height: 16px;
 
             font-size: 11px;
+        }
+
+        .buttons {
+
+            gap: 4px;
+        }
+
+        button {
+
+            padding: 4px;
+
+            font-size: 10px;
+        }
+
+        .share-box {
+
+            gap: 4px;
+        }
+
+        #viewerLink {
+
+            padding: 4px;
+
+            font-size: 10px;
+        }
+
+        #copyLinkBtn {
+
+            padding: 4px 8px;
+
+            font-size: 10px;
         }
     }
 

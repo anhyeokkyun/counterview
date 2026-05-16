@@ -21,7 +21,9 @@
 
         height: 100dvh;
 
-        overflow: hidden;
+        overflow-x: hidden;
+
+        overflow-y: auto;
 
         display: flex;
 
@@ -58,7 +60,9 @@
 
         gap: 2px;
 
-        overflow: hidden;
+        overflow-x: hidden;
+
+        overflow-y: auto;
     }
 
     h1 {
@@ -494,6 +498,103 @@
         .container {
 
             min-height: -webkit-fill-available;
+        }
+    }
+
+    @media screen
+    and (orientation: landscape)
+    and (max-height: 500px) {
+
+        .container {
+
+            padding: 2px;
+
+            gap: 1px;
+        }
+
+        h1 {
+
+            font-size: 10px;
+        }
+
+        #roomTitle {
+
+            font-size: 10px;
+        }
+
+        #roomTitleInput {
+
+            padding: 2px;
+
+            font-size: 9px;
+        }
+
+        .time-section {
+
+            padding: 2px;
+        }
+
+        .section-title {
+
+            font-size: 9px;
+
+            margin-bottom: 1px;
+        }
+
+        .time-box label {
+
+            font-size: 8px;
+
+            margin-bottom: 0;
+        }
+
+        .time-box input {
+
+            padding: 2px;
+
+            font-size: 9px;
+        }
+
+        .timer-display {
+
+            max-height: 30vh;
+
+            font-size: min(9vw, 44px);
+
+            line-height: 0.85;
+        }
+
+        .buttons {
+
+            gap: 2px;
+        }
+
+        button {
+
+            padding: 3px;
+
+            font-size: 9px;
+        }
+
+        #viewerLink {
+
+            padding: 3px;
+
+            font-size: 8px;
+        }
+
+        #copyLinkBtn {
+
+            padding: 3px 6px;
+
+            font-size: 8px;
+        }
+
+        #midAlertMessage {
+
+            height: 10px;
+
+            font-size: 8px;
         }
     }
 

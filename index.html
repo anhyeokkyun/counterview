@@ -44,7 +44,7 @@
 
         height: 100dvh;
 
-        padding: 8px;
+        padding: 6px;
 
         border-radius: 18px;
 
@@ -58,7 +58,7 @@
 
         flex-direction: column;
 
-        gap: 6px;
+        gap: 3px;
 
         overflow: hidden;
     }
@@ -111,13 +111,13 @@
 
     .time-section {
 
+        padding: 6px;
+
+        background: #3a3a3a;
+
         border: 2px solid #555;
 
         border-radius: 14px;
-
-        padding: 8px;
-
-        background: #3a3a3a;
 
         flex-shrink: 0;
     }
@@ -179,23 +179,25 @@
 
     .timer-display {
 
+        flex-grow: 1;
+
         display: flex;
 
         justify-content: center;
 
         align-items: center;
 
-        font-size: min(11vw, 90px);
+        font-size: min(14vw, 120px);
 
         font-weight: bold;
 
         letter-spacing: 2px;
 
-        min-height: 60px;
-
-        flex-shrink: 1;
+        min-height: 0;
 
         overflow: hidden;
+
+        line-height: 1;
     }
 
     #midAlertMessage {
@@ -232,7 +234,7 @@
 
         display: flex;
 
-        gap: 8px;
+        gap: 6px;
 
         flex-shrink: 0;
     }
@@ -275,7 +277,7 @@
 
         display: flex;
 
-        gap: 8px;
+        gap: 6px;
 
         flex-shrink: 0;
     }
@@ -392,16 +394,16 @@
 
         .timer-display {
 
-            font-size: min(7vw, 48px);
+            font-size: min(9vw, 72px);
 
-            min-height: 40px;
+            min-height: 0;
         }
 
         #midAlertMessage {
 
             height: 16px;
 
-            font-size: 11px;
+            font-size: 12px;
         }
 
         button {

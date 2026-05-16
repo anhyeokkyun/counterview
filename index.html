@@ -539,7 +539,7 @@ async function startTimer() {
 
             midAlertTriggered = true;
 
-            playAlarm();
+            playMidAlarm();
 
             const message =
                 document.getElementById(
@@ -575,7 +575,7 @@ async function startTimer() {
 
             display.classList.add("finished");
 
-            playAlarm();
+            playFinalAlarm();
 
             setTimeout(() => {
 
@@ -630,8 +630,62 @@ const audioContext =
     )();
 
 // Web Audio API 알람
-function playAlarm() {
+const audioContext =
+    new (
+        window.AudioContext ||
+        window.webkitAudioContext
+    )();
 
+// 중간 알림
+function playMidAlarm() {
+
+    // 2회
+    for (let i = 0; i < 2; i++) {
+
+        const oscillator =
+            audioContext.createOscillator();
+
+        const gainNode =
+            audioContext.createGain();
+
+        oscillator.type = "sine";
+
+        oscillator.frequency.setValueAtTime(
+            700,
+            audioContext.currentTime
+        );
+
+        oscillator.connect(gainNode);
+
+        gainNode.connect(
+            audioContext.destination
+        );
+
+        // 0.25초 간격
+        const startTime =
+            audioContext.currentTime +
+            (i * 0.25);
+
+        gainNode.gain.setValueAtTime(
+            0.25,
+            startTime
+        );
+
+        gainNode.gain.exponentialRampToValueAtTime(
+            0.0001,
+            startTime + 0.25
+        );
+
+        oscillator.start(startTime);
+
+        oscillator.stop(startTime + 0.25);
+    }
+}
+
+// 최종 종료 알림
+function playFinalAlarm() {
+
+    // 5회
     for (let i = 0; i < 5; i++) {
 
         const oscillator =
@@ -653,6 +707,7 @@ function playAlarm() {
             audioContext.destination
         );
 
+        // 0.1초 간격
         const startTime =
             audioContext.currentTime +
             (i * 0.1);

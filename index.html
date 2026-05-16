@@ -8,444 +8,424 @@
     <title>COUNTERVIEW</title>
 
     <style>
-        * {
-            box-sizing: border-box;
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+
+        margin: 0;
+
+        width: 100vw;
+
+        height: 100dvh;
+
+        overflow: hidden;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        background: #1e1e1e;
+
+        font-family: Arial, sans-serif;
+
+        color: white;
+    }
+
+    .container {
+
+        width: 92vw;
+
+        max-width: 1200px;
+
+        height: 100dvh;
+
+        padding: 8px;
+
+        border-radius: 18px;
+
+        background: #2c2c2c;
+
+        text-align: center;
+
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 6px;
+
+        overflow: hidden;
+    }
+
+    h1 {
+
+        margin: 0;
+
+        font-size: clamp(10px, 2vw, 18px);
+
+        flex-shrink: 0;
+    }
+
+    #roomTitle {
+
+        font-size: clamp(14px, 2vw, 24px);
+
+        font-weight: bold;
+
+        color: #ffd54f;
+
+        margin: 0;
+
+        flex-shrink: 0;
+    }
+
+    .room-title-input-wrap {
+
+        flex-shrink: 0;
+    }
+
+    #roomTitleInput {
+
+        width: 100%;
+
+        padding: 6px;
+
+        border: none;
+
+        border-radius: 10px;
+
+        background: #444;
+
+        color: white;
+
+        font-size: 14px;
+
+        text-align: center;
+    }
+
+    .time-section {
+
+        border: 2px solid #555;
+
+        border-radius: 14px;
+
+        padding: 8px;
+
+        background: #3a3a3a;
+
+        flex-shrink: 0;
+    }
+
+    .section-title {
+
+        font-size: 16px;
+
+        font-weight: bold;
+
+        margin-bottom: 6px;
+
+        color: #ffd54f;
+
+        text-align: left;
+    }
+
+    .time-inputs {
+
+        display: flex;
+
+        gap: 8px;
+    }
+
+    .time-box {
+
+        flex: 1;
+    }
+
+    .time-box label {
+
+        display: block;
+
+        margin-bottom: 4px;
+
+        font-size: 12px;
+
+        color: #cccccc;
+    }
+
+    .time-box input {
+
+        width: 100%;
+
+        padding: 6px;
+
+        font-size: 15px;
+
+        text-align: center;
+
+        border: none;
+
+        border-radius: 8px;
+
+        background: #444;
+
+        color: white;
+    }
+
+    .timer-display {
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        font-size: min(11vw, 90px);
+
+        font-weight: bold;
+
+        letter-spacing: 2px;
+
+        min-height: 60px;
+
+        flex-shrink: 1;
+
+        overflow: hidden;
+    }
+
+    #midAlertMessage {
+
+        height: 22px;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        font-size: 14px;
+
+        font-weight: bold;
+
+        color: #ffd54f;
+
+        opacity: 0;
+
+        transition: opacity 0.3s ease;
+
+        flex-shrink: 0;
+    }
+
+    #midAlertMessage.show {
+
+        opacity: 1;
+
+        animation: blink 1s infinite;
+    }
+
+    .buttons {
+
+        display: flex;
+
+        gap: 8px;
+
+        flex-shrink: 0;
+    }
+
+    button {
+
+        flex: 1;
+
+        padding: 8px;
+
+        border: none;
+
+        border-radius: 10px;
+
+        font-size: 13px;
+
+        font-weight: bold;
+
+        color: white;
+
+        cursor: pointer;
+    }
+
+    .start-btn {
+
+        background: #4caf50;
+    }
+
+    .pause-btn {
+
+        background: #ff9800;
+    }
+
+    .reset-btn {
+
+        background: #f44336;
+    }
+
+    .share-box {
+
+        display: flex;
+
+        gap: 8px;
+
+        flex-shrink: 0;
+    }
+
+    #viewerLink {
+
+        flex: 1;
+
+        padding: 8px;
+
+        border: none;
+
+        border-radius: 8px;
+
+        background: #444;
+
+        color: white;
+
+        font-size: 12px;
+    }
+
+    #copyLinkBtn {
+
+        padding: 8px 12px;
+
+        border: none;
+
+        border-radius: 8px;
+
+        background: #2196f3;
+
+        color: white;
+
+        font-weight: bold;
+    }
+
+    .finished {
+
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+
+        0% {
+            opacity: 1;
         }
 
-        body {
-
-            margin: 0;
-
-            width: 100vw;
-
-            height: 100dvh;
-
-            overflow: hidden;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            background: #1e1e1e;
-
-            font-family: Arial, sans-serif;
-
-            color: white;
+        50% {
+            opacity: 0.3;
         }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    /* 모바일 가로모드 대응 */
+    @media screen and (orientation: landscape) {
 
         .container {
 
-            width: 92vw;
+            padding: 4px;
 
-            max-width: 1200px;
-
-            height: 100dvh;
-
-            padding: 10px;
-
-            border-radius: 18px;
-
-            background: #2c2c2c;
-
-            text-align: center;
-
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 6px;
-
-            overflow: hidden;
+            gap: 3px;
         }
 
         h1 {
 
-            margin-top: 0;
-
-            margin-bottom: 6px;
-
-            font-size: clamp(10px, 2vw, 20px);
-        }
-
-        .time-inputs {
-
-            display: flex;
-
-            gap: 10px;
-
-            margin-bottom: 10px;
-        }
-
-        .time-box {
-            flex: 1;
-        }
-
-        .time-box label {
-            display: block;
-
-            margin-bottom: 8px;
-
-            font-size: 14px;
-
-            color: #cccccc;
-        }
-
-        .time-box input {
-
-            width: 100%;
-
-            padding: 8px;
-
-            font-size: 16px;
-
-            text-align: center;
-
-            border: none;
-
-            border-radius: 10px;
-
-            background: #444;
-
-            color: white;
-        }
-
-        .timer-display {
-
-            flex: 1;
-
-            min-height: 0;
-
-            display: flex;
-
-            justify-content: center;
-
-            align-items: center;
-
-            font-size: min(10vw, 110px);
-
-            font-weight: bold;
-
-            letter-spacing: 2px;
-
-            margin: 0;
-        }
-
-        .buttons {
-
-            display: flex;
-
-            gap: 8px;
-
-            flex-shrink: 0;
-        }
-
-        button {
-            flex: 1;
-
-            padding: 10px;
-
-            border: none;
-            border-radius: 12px;
-
-            font-size: 14px;
-            font-weight: bold;
-
-            color: white;
-
-            cursor: pointer;
-
-            transition:
-                transform 0.1s ease,
-                opacity 0.2s ease,
-                box-shadow 0.2s ease;
-        }
-
-        button:hover {
-            opacity: 0.92;
-        }
-
-        button:active {
-            transform: scale(0.95);
-        }
-
-        .start-btn {
-            background: #4caf50;
-
-            box-shadow:
-                0 4px 12px rgba(76, 175, 80, 0.4);
-        }
-
-        .pause-btn {
-            background: #ff9800;
-
-            box-shadow:
-                0 4px 12px rgba(255, 152, 0, 0.4);
-        }
-
-        .reset-btn {
-            background: #f44336;
-
-            box-shadow:
-                0 4px 12px rgba(244, 67, 54, 0.4);
-        }
-
-        .finished {
-            animation: blink 1s infinite;
-        }
-
-        #midAlertMessage {
-
-            height: 40px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            font-size: 28px;
-            font-weight: bold;
-
-            color: #ffd54f;
-
-            opacity: 0;
-
-            transition: opacity 0.3s ease;
-        }
-
-        #midAlertMessage.show {
-
-            opacity: 1;
-
-            animation: blink 1s infinite;
+            font-size: 12px;
         }
 
         #roomTitle {
 
-            font-size: clamp(
-                18px,
-                2vw,
-                32px
-            );
-
-            font-weight: bold;
-
-            margin-bottom: 10px;
-
-            color: #ffd54f;
-        }
-
-        .room-title-input-wrap {
-
-            margin-bottom: 12px;
+            font-size: 13px;
         }
 
         #roomTitleInput {
 
-            width: 100%;
+            padding: 3px;
 
-            padding: 10px;
-
-            border: none;
-
-            border-radius: 10px;
-
-            background: #444;
-
-            color: white;
-
-            font-size: 16px;
-
-            text-align: center;
+            font-size: 11px;
         }
 
         .time-section {
 
-            border: 2px solid #555;
-
-            border-radius: 16px;
-
-            padding: 10px;
-
-            margin-bottom: 8px;
-
-            background: #3a3a3a;
+            padding: 4px;
         }
 
         .section-title {
 
-            font-size: 20px;
+            font-size: 12px;
 
-            font-weight: bold;
-
-            margin-bottom: 12px;
-
-            color: #ffd54f;
-
-            text-align: left;
-        }
-        @keyframes blink {
-            0% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.3;
-            }
-
-            100% {
-                opacity: 1;
-            }
+            margin-bottom: 2px;
         }
 
-        @media screen and (orientation: landscape) {
+        .time-inputs {
 
-            .container {
-
-                padding: 6px;
-
-                gap: 4px;
-            }
-
-            h1 {
-
-                font-size: 14px;
-
-                margin: 0;
-            }
-
-            #roomTitle {
-
-                font-size: 16px;
-
-                margin: 0;
-            }
-
-            .room-title-input-wrap {
-
-                margin: 0;
-            }
-
-            #roomTitleInput {
-
-                padding: 4px;
-
-                font-size: 12px;
-            }
-
-            .time-section {
-
-                padding: 6px;
-
-                margin-bottom: 4px;
-            }
-
-            .section-title {
-
-                font-size: 14px;
-
-                margin-bottom: 4px;
-            }
-
-            .time-inputs {
-
-                gap: 4px;
-
-                margin-bottom: 0;
-            }
-
-            .time-box label {
-
-                font-size: 10px;
-
-                margin-bottom: 2px;
-            }
-
-            .time-box input {
-
-                padding: 4px;
-
-                font-size: 12px;
-            }
-
-            .timer-display {
-
-                font-size: min(8vw, 60px);
-            }
-
-            #midAlertMessage {
-
-                height: 20px;
-
-                font-size: 14px;
-            }
-
-            button {
-
-                padding: 6px;
-
-                font-size: 11px;
-            }
-
-            #viewerLink {
-
-                padding: 6px;
-
-                font-size: 11px;
-            }
-
-            #copyLinkBtn {
-
-                padding: 6px 10px;
-
-                font-size: 11px;
-            }
+            gap: 4px;
         }
 
-        .share-box {
+        .time-box label {
 
-            display: flex;
+            font-size: 9px;
 
-            gap: 8px;
-
-            flex-shrink: 0;
+            margin-bottom: 1px;
         }
 
-            #viewerLink {
+        .time-box input {
 
-                flex: 1;
+            padding: 2px;
 
-                padding: 10px;
+            font-size: 11px;
+        }
 
-                border: none;
+        .timer-display {
 
-                border-radius: 10px;
+            font-size: min(7vw, 48px);
 
-                background: #444;
+            min-height: 40px;
+        }
 
-                color: white;
+        #midAlertMessage {
 
-                font-size: 14px;
-            }
+            height: 16px;
 
-            #copyLinkBtn {
+            font-size: 11px;
+        }
 
-                padding: 10px 16px;
+        button {
 
-                border: none;
+            padding: 5px;
 
-                border-radius: 10px;
+            font-size: 10px;
+        }
 
-                background: #2196f3;
+        #viewerLink {
 
-                color: white;
+            padding: 5px;
 
-                cursor: pointer;
+            font-size: 10px;
+        }
 
-                font-weight: bold;
-            }
+        #copyLinkBtn {
+
+            padding: 5px 8px;
+
+            font-size: 10px;
+        }
+    }
+
     </style>
 </head>
 

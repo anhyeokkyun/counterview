@@ -38,15 +38,13 @@
 
     .container {
 
-        width: 96vw;
-
-        max-width: 2200px;
+        width: min(94vw, 1600px);
 
         height: 100dvh;
 
-        padding: 6px;
+        padding: 12px;
 
-        border-radius: 18px;
+        border-radius: 20px;
 
         background: #2c2c2c;
 
@@ -58,7 +56,7 @@
 
         flex-direction: column;
 
-        gap: 3px;
+        gap: 6px;
 
         overflow: hidden;
     }
@@ -67,22 +65,18 @@
 
         margin: 0;
 
-        font-size: clamp(18px, 2vw, 36px);
-
-        flex-shrink: 0;
+        font-size: clamp(16px, 2vw, 36px);
     }
 
     #roomTitle {
 
-        font-size: clamp(24px, 2.5vw, 42px);
+        font-size: clamp(18px, 2.2vw, 38px);
 
         font-weight: bold;
 
         color: #ffd54f;
 
         margin: 0;
-
-        flex-shrink: 0;
     }
 
     .room-title-input-wrap {
@@ -104,31 +98,31 @@
 
         color: white;
 
-        font-size: 22px;
+        font-size: clamp(14px, 1.4vw, 24px);
 
         text-align: center;
     }
 
     .time-section {
 
-        padding: 14px;
-
-        background: #3a3a3a;
-
         border: 2px solid #555;
 
-        border-radius: 14px;
+        border-radius: 16px;
+
+        padding: 12px;
+
+        background: #3a3a3a;
 
         flex-shrink: 0;
     }
 
     .section-title {
 
-        font-size: 28px;
+        font-size: clamp(16px, 1.8vw, 30px);
 
         font-weight: bold;
 
-        margin-bottom: 10px;
+        margin-bottom: 8px;
 
         color: #ffd54f;
 
@@ -153,7 +147,7 @@
 
         margin-bottom: 6px;
 
-        font-size: 20px;
+        font-size: clamp(12px, 1.2vw, 22px);
 
         color: #cccccc;
     }
@@ -162,9 +156,9 @@
 
         width: 100%;
 
-        padding: 14px;
+        padding: 12px;
 
-        font-size: clamp(18px, 1.6vw, 34px);
+        font-size: clamp(16px, 1.6vw, 28px);
 
         text-align: center;
 
@@ -179,7 +173,9 @@
 
     .timer-display {
 
-        flex-grow: 1;
+        flex: 1;
+
+        min-height: 0;
 
         display: flex;
 
@@ -187,17 +183,17 @@
 
         align-items: center;
 
-        font-size: clamp(64px, 14vw, 240px);
+        overflow: hidden;
+
+        font-size: min(14vw, 220px);
 
         font-weight: bold;
 
-        letter-spacing: 4px;
-
-        min-height: 0;
-
-        overflow: hidden;
+        letter-spacing: 2px;
 
         line-height: 1;
+
+        margin: 0;
     }
 
     #midAlertMessage {
@@ -243,13 +239,13 @@
 
         flex: 1;
 
-        padding: 14px;
+        padding: 12px;
 
         border: none;
 
         border-radius: 12px;
 
-        font-size: clamp(16px, 1.5vw, 28px);
+        font-size: clamp(13px, 1.2vw, 24px);
 
         font-weight: bold;
 
@@ -286,17 +282,17 @@
 
         flex: 1;
 
-        padding: 14px;
+        padding: 12px;
 
         border: none;
 
-        border-radius: 10px;
+        border-radius: 12px;
 
         background: #444;
 
         color: white;
 
-        font-size: clamp(14px, 1.2vw, 24px);
+        font-size: clamp(12px, 1vw, 20px);
     }
 
     #copyLinkBtn {
@@ -429,6 +425,92 @@
             padding: 5px 8px;
 
             font-size: 10px;
+        }
+    }
+
+    @media screen and (max-height: 500px) and (orientation: landscape) {
+
+        .container {
+
+            padding: 4px;
+
+            gap: 2px;
+        }
+
+        h1 {
+
+            font-size: 12px;
+        }
+
+        #roomTitle {
+
+            font-size: 12px;
+        }
+
+        #roomTitleInput {
+
+            padding: 3px;
+
+            font-size: 10px;
+        }
+
+        .time-section {
+
+            padding: 4px;
+        }
+
+        .section-title {
+
+            font-size: 11px;
+
+            margin-bottom: 2px;
+        }
+
+        .time-box label {
+
+            font-size: 9px;
+
+            margin-bottom: 1px;
+        }
+
+        .time-box input {
+
+            padding: 3px;
+
+            font-size: 10px;
+        }
+
+        .timer-display {
+
+            font-size: min(11vw, 80px);
+        }
+
+        button {
+
+            padding: 5px;
+
+            font-size: 10px;
+        }
+
+        #viewerLink {
+
+            padding: 5px;
+
+            font-size: 10px;
+        }
+
+        #copyLinkBtn {
+
+            padding: 5px 8px;
+
+            font-size: 10px;
+        }
+
+        #midAlertMessage {
+
+            height: 16px;
+
+            font-size: 11px;
         }
     }
 

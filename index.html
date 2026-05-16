@@ -61,93 +61,17 @@
             );
         }
 
-        .timer-row {
-
-            display: flex;
-
-            align-items: center;
-
-            gap: 16px;
-
-            margin-bottom: 18px;
-        }
-
-        .timer-label {
-
-            width: 110px;
-
-            height: 90px;
-
-            display: flex;
-
-            justify-content: center;
-            align-items: center;
-
-            border-radius: 14px;
-
-            font-size: 22px;
-
-            font-weight: bold;
-
-            letter-spacing: 1px;
-
-            color: white;
-        }
-
-        .final-label {
-
-            background: #4caf50;
-        }
-
-        .split-label {
-
-            background: #ff9800;
-        }
-
-        .timer-input-area {
-
-            flex: 1;
-        }
-
-        .timer-units {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            margin-bottom: 8px;
-
-            padding: 0 6px;
-
-            font-size: 14px;
-
-            color: #cccccc;
-        }
-
-        .timer-inputs {
+        .time-inputs {
 
             display: flex;
 
             gap: 10px;
+
+            margin-bottom: 10px;
         }
 
-        .timer-inputs input {
-
+        .time-box {
             flex: 1;
-
-            padding: 16px;
-
-            border: none;
-
-            border-radius: 12px;
-
-            background: #444;
-
-            color: white;
-
-            font-size: 28px;
-
-            text-align: center;
         }
 
         .time-box label {
@@ -185,7 +109,7 @@
             justify-content: center;
             align-items: center;
 
-            font-size: 10vw;
+            font-size: 12vw;
 
             font-weight: bold;
 
@@ -456,85 +380,91 @@
 
         </div>
 
-        <div class="timer-row">
+        <div class="time-inputs">
 
-            <div class="timer-label final-label">
-                FINAL
+            <div class="time-box">
+
+                <label for="hours">시</label>
+
+                <input
+                    type="number"
+                    id="hours"
+                    min="0"
+                    value="0">
+
             </div>
 
-            <div class="timer-input-area">
+            <div class="time-box">
 
-                <div class="timer-units">
-                    <span>Hours</span>
-                    <span>Minutes</span>
-                    <span>Seconds</span>
-                </div>
+                <label for="minutes">분</label>
 
-                <div class="timer-inputs">
+                <input
+                    type="number"
+                    id="minutes"
+                    min="0"
+                    max="59"
+                    value="0">
 
-                    <input
-                        type="number"
-                        id="hours"
-                        min="0"
-                        value="0">
+            </div>
 
-                    <input
-                        type="number"
-                        id="minutes"
-                        min="0"
-                        max="59"
-                        value="0">
+            <div class="time-box">
 
-                    <input
-                        type="number"
-                        id="seconds"
-                        min="0"
-                        max="59"
-                        value="0">
+                <label for="seconds">초</label>
 
-                </div>
+                <input
+                    type="number"
+                    id="seconds"
+                    min="0"
+                    max="59"
+                    value="0">
 
             </div>
 
         </div>
 
-        <div class="timer-row">
+        <div class="time-inputs mid-alert-inputs">
 
-            <div class="timer-label split-label">
-                SPLIT
+            <div class="time-box">
+
+                <label for="alertHours">
+                    중간알림 시
+                </label>
+
+                <input
+                    type="number"
+                    id="alertHours"
+                    min="0"
+                    value="0">
+
             </div>
 
-            <div class="timer-input-area">
+            <div class="time-box">
 
-                <div class="timer-units">
-                    <span>Hours</span>
-                    <span>Minutes</span>
-                    <span>Seconds</span>
-                </div>
+                <label for="alertMinutes">
+                    중간알림 분
+                </label>
 
-                <div class="timer-inputs">
+                <input
+                    type="number"
+                    id="alertMinutes"
+                    min="0"
+                    max="59"
+                    value="0">
 
-                    <input
-                        type="number"
-                        id="alertHours"
-                        min="0"
-                        value="0">
+            </div>
 
-                    <input
-                        type="number"
-                        id="alertMinutes"
-                        min="0"
-                        max="59"
-                        value="0">
+            <div class="time-box">
 
-                    <input
-                        type="number"
-                        id="alertSeconds"
-                        min="0"
-                        max="59"
-                        value="0">
+                <label for="alertSeconds">
+                    중간알림 초
+                </label>
 
-                </div>
+                <input
+                    type="number"
+                    id="alertSeconds"
+                    min="0"
+                    max="59"
+                    value="0">
 
             </div>
 

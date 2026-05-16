@@ -596,6 +596,37 @@
 
             font-size: 8px;
         }
+        
+        .viewer-mode .timer-display {
+
+            min-height: 55vh;
+
+            font-size: min(18vw, 120px);
+        }
+    }
+
+    .viewer-mode {
+
+        justify-content: center;
+    }
+
+    .viewer-mode .timer-display {
+
+        flex: 1;
+
+        width: 100%;
+
+        min-height: 40vh;
+
+        max-height: none;
+
+        font-size: min(22vw, 220px);
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
     }
 
     </style>
@@ -1320,6 +1351,10 @@ onValue(
 
 // 시청자 모드
 if (isViewer) {
+    
+    document
+    .querySelector(".container")
+    .classList.add("viewer-mode");
     
     document
     .querySelector(".share-box")

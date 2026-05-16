@@ -315,8 +315,8 @@
 
                 font-size: 16px;
             }
-
-            .share-box {
+        }
+        .share-box {
 
                 display: flex;
 
@@ -358,7 +358,6 @@
 
                 font-weight: bold;
             }
-        }
     </style>
 </head>
 
@@ -591,9 +590,6 @@ if (!roomId) {
         newUrl
     );
 }
-
-const roomId =
-    params.get("room") || "default";
 
 let timerId = null;
 

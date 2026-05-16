@@ -315,6 +315,49 @@
 
                 font-size: 16px;
             }
+
+            .share-box {
+
+                display: flex;
+
+                gap: 10px;
+
+                margin-bottom: 10px;
+            }
+
+            #viewerLink {
+
+                flex: 1;
+
+                padding: 10px;
+
+                border: none;
+
+                border-radius: 10px;
+
+                background: #444;
+
+                color: white;
+
+                font-size: 14px;
+            }
+
+            #copyLinkBtn {
+
+                padding: 10px 16px;
+
+                border: none;
+
+                border-radius: 10px;
+
+                background: #2196f3;
+
+                color: white;
+
+                cursor: pointer;
+
+                font-weight: bold;
+            }
         }
     </style>
 </head>
@@ -438,6 +481,19 @@
 
         <div id="midAlertMessage"></div>
 
+        <div class="share-box">
+
+            <input
+                type="text"
+                id="viewerLink"
+                readonly>
+
+            <button id="copyLinkBtn">
+                링크 복사
+            </button>
+
+        </div>
+
         <div class="buttons">
 
             <button
@@ -513,6 +569,29 @@ const params =
 const isViewer =
     params.get("viewer") === "1";
 
+// room id
+let roomId =
+    params.get("room");
+
+// room 없으면 자동 생성
+if (!roomId) {
+
+    roomId =
+        Math.random()
+            .toString(36)
+            .substring(2, 8);
+
+    // 호스트 URL 생성
+    const newUrl =
+        `${window.location.pathname}?room=${roomId}`;
+
+    window.history.replaceState(
+        {},
+        "",
+        newUrl
+    );
+}
+
 const roomId =
     params.get("room") || "default";
 
@@ -528,6 +607,25 @@ let viewerMidAlertShown = false;
 
 const display =
     document.getElementById("timerDisplay");
+
+const viewerLinkInput =
+    document.getElementById(
+        "viewerLink"
+    );
+
+const copyLinkBtn =
+    document.getElementById(
+        "copyLinkBtn"
+    );
+
+// viewer url 생성
+const viewerUrl =
+    `${window.location.origin}` +
+    `${window.location.pathname}` +
+    `?viewer=1&room=${roomId}`;
+
+viewerLinkInput.value =
+    viewerUrl;
 
 const roomTitle =
     document.getElementById("roomTitle");
@@ -901,6 +999,27 @@ document
     .getElementById("resetBtn")
     .addEventListener("click", resetTimer);
 
+copyLinkBtn.addEventListener(
+
+    "click",
+
+    async () => {
+
+        await navigator.clipboard
+            .writeText(viewerUrl);
+
+        copyLinkBtn.textContent =
+            "복사 완료!";
+
+        setTimeout(() => {
+
+            copyLinkBtn.textContent =
+                "링크 복사";
+
+        }, 1500);
+    }
+);
+
 roomTitleInput.addEventListener(
 
     "input",
@@ -942,6 +1061,10 @@ onValue(
 // 시청자 모드
 if (isViewer) {
 
+    document
+    .querySelector(".share-box")
+    .style.display = "none";
+
     document.querySelector(".buttons")
         .style.display = "none";
 
@@ -956,7 +1079,7 @@ if (isViewer) {
         .forEach((element) => {
 
             element.style.display = "none";
-        });
+});
 
     onValue(
 

@@ -624,14 +624,19 @@ async function resetTimer() {
 }
 
 // Web Audio API 알람
-const audioContext =
-    new (
-        window.AudioContext ||
-        window.webkitAudioContext
-    )();
+let audioContext = null;
 
 // 중간 알림
 function playMidAlarm() {
+
+    if (!audioContext) {
+
+        audioContext =
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+    }
 
     // 2회
     for (let i = 0; i < 2; i++) {
@@ -678,6 +683,15 @@ function playMidAlarm() {
 
 // 최종 종료 알림
 function playFinalAlarm() {
+
+    if (!audioContext) {
+
+        audioContext =
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+    }
 
     // 5회
     for (let i = 0; i < 5; i++) {

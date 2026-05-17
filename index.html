@@ -182,7 +182,7 @@
     .pause-btn { background: #ff9800; }
     .reset-btn { background: #f44336; }
 
-    /* 공유 박스 레이아웃 조정 */
+    /* 공유 박스 레이아웃 최적화 */
     .share-box {
         display: flex;
         gap: 6px;
@@ -191,8 +191,10 @@
         order: 7;
     }
 
+    /* URL 인풋창이 남은 모든 공간을 다 차지하도록 flex-grow 부여 */
     #viewerLink {
-        flex: 1;
+        flex: 1; 
+        min-width: 0; /* flex 안에서 input이 부모를 터트리는 현상 방지 */
         padding: 6px;
         border: none;
         border-radius: 10px;
@@ -201,9 +203,11 @@
         font-size: clamp(10px, 0.8vw, 16px);
     }
 
+    /* 버튼 너비를 기존의 대략 절반 수준으로 축소 및 고정 */
     #copyLinkBtn {
         padding: 6px 0;
-        width: 90px;
+        width: 50px; /* 기존 90px -> 50px 축소 */
+        flex-shrink: 0;
         border: none;
         border-radius: 10px;
         background: #2196f3;
@@ -215,7 +219,8 @@
 
     #showQrBtn {
         padding: 6px 0;
-        width: 80px;
+        width: 45px; /* 기존 80px -> 45px 축소 */
+        flex-shrink: 0;
         border: none;
         border-radius: 10px;
         background: #9c27b0;
@@ -266,8 +271,8 @@
         button { padding: 4px; font-size: 10px; }
         .share-box { gap: 4px; }
         #viewerLink { padding: 4px; font-size: 10px; }
-        #copyLinkBtn { padding: 4px 0; width: 75px; font-size: 10px; }
-        #showQrBtn { padding: 4px 0; width: 70px; font-size: 10px; }
+        #copyLinkBtn { padding: 4px 0; width: 45px; font-size: 10px; }
+        #showQrBtn { padding: 4px 0; width: 40px; font-size: 10px; }
     }
 
     @supports (-webkit-touch-callout: none) {
@@ -288,8 +293,8 @@
         .buttons { gap: 2px; }
         button { padding: 3px; font-size: 9px; }
         #viewerLink { padding: 3px; font-size: 8px; }
-        #copyLinkBtn { padding: 3px 0; width: 70px; font-size: 8px; }
-        #showQrBtn { padding: 3px 0; width: 65px; font-size: 8px; }
+        #copyLinkBtn { padding: 3px 0; width: 40px; font-size: 8px; }
+        #showQrBtn { padding: 3px 0; width: 35px; font-size: 8px; }
         #midAlertMessage { height: 10px; font-size: 8px; }
         .viewer-mode .timer-display { min-height: 55vh; font-size: min(18vw, 120px); }
     }
@@ -415,11 +420,11 @@
             <button class="reset-btn" id="resetBtn">Reset</button>
         </div>
 
-        <!-- 버튼 분리 적용 영역 -->
+        <!-- 텍스트 축약(Copy, QR) 및 공간 할당 최적화 완료 -->
         <div class="share-box">
             <input type="text" id="viewerLink" readonly>
-            <button id="copyLinkBtn">Copy Link</button>
-            <button id="showQrBtn">QR Code</button>
+            <button id="copyLinkBtn">Copy</button>
+            <button id="showQrBtn">QR</button>
         </div>
     </div>
 
@@ -514,7 +519,7 @@ function getInputSeconds() {
     const hours = parseInt(document.getElementById("hours").value) || 0;
     const minutes = parseInt(document.getElementById("minutes").value) || 0;
     const seconds = parseInt(document.getElementById("seconds").value) || 0;
-    return (hours * 3600) + (minutes * 60) + seconds;
+    return (hours * 3600) + (minutes * 60) seconds;
 }
 
 function getMidAlertSeconds() {
@@ -636,12 +641,10 @@ function playFinalAlarm() {
     }
 }
 
-// 상단 타이머 컨트롤 이벤트
 document.getElementById("startBtn").addEventListener("click", startTimer);
 document.getElementById("pauseBtn").addEventListener("click", pauseTimer);
 document.getElementById("resetBtn").addEventListener("click", resetTimer);
 
-// [독립 기능 1] Copy Link 버튼 클릭시 링크만 복사
 copyLinkBtn.addEventListener('click', () => {
     viewerLinkInput.select();
     navigator.clipboard.writeText(viewerLinkInput.value).then(() => {
@@ -651,7 +654,6 @@ copyLinkBtn.addEventListener('click', () => {
     });
 });
 
-// [독립 기능 2] QR Code 버튼 클릭시 모달 열리며 QR 생성
 showQrBtn.addEventListener('click', () => {
     const currentUrl = encodeURIComponent(viewerLinkInput.value);
     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${currentUrl}`;
@@ -660,7 +662,6 @@ showQrBtn.addEventListener('click', () => {
     qrModal.style.display = 'flex';
 });
 
-// 모달 닫기 이벤트들
 closeModalBtn.addEventListener('click', () => {
     qrModal.style.display = 'none';
 });

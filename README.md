@@ -1,5 +1,4 @@
-# COUNTERVIEW version 1.0
-
+# COUNTERVIEW
 > Firebase Realtime Database 기반의 양방향 실시간 동기화 웹 타이머 시스템
 
 COUNTERVIEW는 호스트(발표자/진행자)와 뷰어(청중/참가자) 간의 완벽한 실시간 시간 동기화를 제공하는 웹 기반 타이머 애플리케이션입니다. 반응형 레이아웃이 적용되어 모바일 가로/세로 모드 및 데스크톱 환경 어디서나 최적의 화면을 제공합니다.

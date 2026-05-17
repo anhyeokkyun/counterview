@@ -159,6 +159,7 @@
         animation: blink 1s infinite;
     }
 
+    /* 컨트롤 버튼 박스 */
     .buttons {
         display: flex;
         gap: 6px;
@@ -167,7 +168,7 @@
         order: 6;
     }
 
-    button {
+    .buttons button {
         flex: 1;
         padding: 6px;
         border: none;
@@ -176,46 +177,55 @@
         font-weight: bold;
         color: white;
         cursor: pointer;
+        height: 100%;
     }
 
     .start-btn { background: #4caf50; }
     .pause-btn { background: #ff9800; }
     .reset-btn { background: #f44336; }
 
-    /* 공유 박스 레이아웃 대폭 수정 */
+    /* 공유 박스 레이아웃 (세로 길이 맞춤 및 텍스트 확대) */
     .share-box {
         display: flex;
         gap: 6px;
         flex-shrink: 0;
-        min-height: 40px;
+        min-height: 40px; /* 상단 .buttons와 높이 기조 통일 */
         order: 7;
         align-items: center;
     }
 
-    /* URL 인풋창이 남은 가로 공간을 전부 압도적으로 채우도록 설정 */
+    /* URL 인풋창 높이 및 텍스트 크기 확대 */
     #viewerLink {
         flex: 1; 
         min-width: 0;
-        padding: 10px;
+        height: 100%; /* 부모 share-box 높이에 꽉 차게 설정 */
+        padding: 6px 12px;
         border: none;
         border-radius: 10px;
         background: #444;
         color: white;
-        font-size: clamp(10px, 0.8vw, 16px);
+        font-size: clamp(12px, 0.9vw, 18px); /* 높아진 상자에 맞춰 인풋 텍스트 크기 확대 */
+        display: flex;
+        align-items: center;
     }
 
-    /* 버튼들은 글자 크기에 맞춰 최소한으로 축소되고 절대 확장되지 않음 */
+    /* Copy 및 QR 버튼 가로 길이를 동일하게 설정 및 높이 연동 */
     #copyLinkBtn, #showQrBtn {
-        flex: 0 0 auto !important; /* 너비 자동 확장 방지 */
-        padding: 10px 16px !important; /* 버튼 내 여백 */
-        width: auto !important; /* 미디어쿼리 고정값 강제 해제 */
-        font-size: clamp(11px, 0.9vw, 14px);
+        flex: 0 0 auto !important;
+        min-width: 70px; /* 두 버튼의 가로 너비를 동일한 최소값으로 통일 */
+        height: 100%; /* 부모 share-box 높이에 꽉 차게 설정 */
+        padding: 6px 0 !important;
+        width: auto !important;
+        font-size: clamp(12px, 0.9vw, 18px); /* 상단 버튼들과 텍스트 크기 통일 */
         font-weight: bold;
         white-space: nowrap;
         border: none;
         border-radius: 10px;
         color: white;
         cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     #copyLinkBtn { background: #2196f3; }
@@ -258,12 +268,14 @@
             padding: 0;
         }
         #midAlertMessage { height: 16px; font-size: 11px; }
-        .buttons { gap: 4px; }
-        button { padding: 4px; font-size: 10px; }
-        .share-box { gap: 4px; }
-        #viewerLink { padding: 4px; font-size: 10px; }
-        /* 미디어 쿼리 내 버튼 강제 고정 width 제거 */
-        #copyLinkBtn, #showQrBtn { padding: 4px 10px !important; font-size: 10px; }
+        
+        /* 가로모드 시 상단 및 하단 박스 높이 연동 축소 */
+        .buttons { gap: 4px; min-height: 30px; }
+        .share-box { gap: 4px; min-height: 30px; }
+        .buttons button { padding: 4px; font-size: 10px; }
+        
+        #viewerLink { padding: 4px 8px; font-size: 10px; }
+        #copyLinkBtn, #showQrBtn { min-width: 50px; padding: 4px 0 !important; font-size: 10px; }
     }
 
     @supports (-webkit-touch-callout: none) {
@@ -281,10 +293,14 @@
         .time-box label { font-size: 8px; margin-bottom: 0; }
         .time-box input { padding: 2px; font-size: 9px; }
         .timer-display { max-height: 30vh; font-size: min(9vw, 44px); line-height: 0.85; }
-        .buttons { gap: 2px; }
-        button { padding: 3px; font-size: 9px; }
-        #viewerLink { padding: 3px; font-size: 8px; }
-        #copyLinkBtn, #showQrBtn { padding: 3px 8px !important; font-size: 8px; }
+        
+        /* 초소형 화면 대응 */
+        .buttons { gap: 2px; min-height: 24px; }
+        .share-box { gap: 2px; min-height: 24px; }
+        .buttons button { padding: 2px; font-size: 9px; }
+        
+        #viewerLink { padding: 2px 6px; font-size: 8px; }
+        #copyLinkBtn, #showQrBtn { min-width: 45px; padding: 2px 0 !important; font-size: 8px; }
         #midAlertMessage { height: 10px; font-size: 8px; }
         .viewer-mode .timer-display { min-height: 55vh; font-size: min(18vw, 120px); }
     }
@@ -406,6 +422,7 @@
             <button class="reset-btn" id="resetBtn">Reset</button>
         </div>
 
+        <!-- 추가 요구사항 전면 반영 완료 -->
         <div class="share-box">
             <input type="text" id="viewerLink" readonly>
             <button id="copyLinkBtn">Copy</button>

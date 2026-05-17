@@ -528,10 +528,6 @@ const closeReadmeModalBtn = document.getElementById('closeReadmeModalBtn');
 const viewerUrl = `${window.location.origin}${window.location.pathname}?viewer=1&room=${roomId}`;
 viewerLinkInput.value = viewerUrl;
 
-const readmeModal = document.getElementById('readmeModal');
-const readmeTitleBtn = document.getElementById('readmeTitleBtn');
-const closeReadmeModalBtn = document.getElementById('closeReadmeModalBtn');
-
 function formatTime(totalSeconds) {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);

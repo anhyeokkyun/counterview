@@ -182,6 +182,7 @@
     .pause-btn { background: #ff9800; }
     .reset-btn { background: #f44336; }
 
+    /* 공유 박스 레이아웃 조정 */
     .share-box {
         display: flex;
         gap: 6px;
@@ -207,7 +208,19 @@
         border-radius: 10px;
         background: #2196f3;
         color: white;
-        font-size: clamp(11px, 0.9vw, 15px);
+        font-size: clamp(11px, 0.9vw, 14px);
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+    #showQrBtn {
+        padding: 6px 0;
+        width: 80px;
+        border: none;
+        border-radius: 10px;
+        background: #9c27b0;
+        color: white;
+        font-size: clamp(11px, 0.9vw, 14px);
         font-weight: bold;
         white-space: nowrap;
     }
@@ -253,7 +266,8 @@
         button { padding: 4px; font-size: 10px; }
         .share-box { gap: 4px; }
         #viewerLink { padding: 4px; font-size: 10px; }
-        #copyLinkBtn { padding: 4px 0; width: 80px; font-size: 10px; }
+        #copyLinkBtn { padding: 4px 0; width: 75px; font-size: 10px; }
+        #showQrBtn { padding: 4px 0; width: 70px; font-size: 10px; }
     }
 
     @supports (-webkit-touch-callout: none) {
@@ -274,7 +288,8 @@
         .buttons { gap: 2px; }
         button { padding: 3px; font-size: 9px; }
         #viewerLink { padding: 3px; font-size: 8px; }
-        #copyLinkBtn { padding: 3px 0; width: 80px; font-size: 8px; }
+        #copyLinkBtn { padding: 3px 0; width: 70px; font-size: 8px; }
+        #showQrBtn { padding: 3px 0; width: 65px; font-size: 8px; }
         #midAlertMessage { height: 10px; font-size: 8px; }
         .viewer-mode .timer-display { min-height: 55vh; font-size: min(18vw, 120px); }
     }
@@ -291,7 +306,7 @@
         align-items: center;
     }
 
-    /* 팝업 전체 배경 (처음엔 숨김) */
+    /* 팝업 전체 배경 */
     .modal {
         display: none; 
         position: fixed;
@@ -400,9 +415,11 @@
             <button class="reset-btn" id="resetBtn">Reset</button>
         </div>
 
+        <!-- 버튼 분리 적용 영역 -->
         <div class="share-box">
             <input type="text" id="viewerLink" readonly>
             <button id="copyLinkBtn">Copy Link</button>
+            <button id="showQrBtn">QR Code</button>
         </div>
     </div>
 
@@ -437,7 +454,6 @@ const params = new URLSearchParams(window.location.search);
 const isViewer = params.get("viewer") === "1";
 let roomId = params.get("room");
 
-// room 없으면 자동 생성
 if (!roomId) {
     roomId = Math.random().toString(36).substring(2, 8);
     const newUrl = `${window.location.pathname}?room=${roomId}`;
@@ -453,15 +469,14 @@ let viewerMidAlertShown = false;
 const display = document.getElementById("timerDisplay");
 const viewerLinkInput = document.getElementById("viewerLink");
 const copyLinkBtn = document.getElementById("copyLinkBtn");
+const showQrBtn = document.getElementById("showQrBtn");
 const roomTitle = document.getElementById("roomTitle");
 const roomTitleInput = document.getElementById("roomTitleInput");
 
-// QR 모달 관련 변수 (중복 선언 제거완료)
 const qrModal = document.getElementById('qrModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const qrcodeContainer = document.getElementById('qrcodeContainer');
 
-// viewer url 생성 및 Input 주소값 주입
 const viewerUrl = `${window.location.origin}${window.location.pathname}?viewer=1&room=${roomId}`;
 viewerLinkInput.value = viewerUrl;
 
@@ -487,7 +502,6 @@ async function updateDisplay() {
     const formatted = formatTime(remainingTime);
     display.textContent = formatted;
 
-    // 호스트만 Firebase 업로드
     if (!isViewer) {
        await set(ref(db, `sharedTimer/${roomId}/current`), {
            time: formatted,
@@ -530,7 +544,6 @@ async function startTimer() {
     timerId = setInterval(async () => {
         remainingTime--;
 
-        // 중간 알림
         if (!midAlertTriggered && midAlertTime > 0 && remainingTime === midAlertTime) {
             midAlertTriggered = true;
             playMidAlarm();
@@ -579,7 +592,6 @@ async function resetTimer() {
     await set(ref(db, `sharedTimer/${roomId}/current`), { time: "00:00:00" });
 }
 
-// Web Audio API 알람
 let audioContext = null;
 
 function playMidAlarm() {
@@ -624,33 +636,35 @@ function playFinalAlarm() {
     }
 }
 
-// 버튼 이벤트 연결
+// 상단 타이머 컨트롤 이벤트
 document.getElementById("startBtn").addEventListener("click", startTimer);
 document.getElementById("pauseBtn").addEventListener("click", pauseTimer);
 document.getElementById("resetBtn").addEventListener("click", resetTimer);
 
-// Copy Link 버튼 및 QR 모달 오픈
+// [독립 기능 1] Copy Link 버튼 클릭시 링크만 복사
 copyLinkBtn.addEventListener('click', () => {
     viewerLinkInput.select();
     navigator.clipboard.writeText(viewerLinkInput.value).then(() => {
         alert("링크가 복사되었습니다!");
-        
-        const currentUrl = encodeURIComponent(viewerLinkInput.value);
-        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${currentUrl}`;
-        
-        qrcodeContainer.innerHTML = `<img src="${qrApiUrl}" alt="QR Code" width="180" height="180">`;
-        qrModal.style.display = 'flex';
     }).catch(err => {
         console.error('복사 실패:', err);
     });
 });
 
-// 닫기 버튼(X)을 누르면 팝업 닫기
+// [독립 기능 2] QR Code 버튼 클릭시 모달 열리며 QR 생성
+showQrBtn.addEventListener('click', () => {
+    const currentUrl = encodeURIComponent(viewerLinkInput.value);
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${currentUrl}`;
+    
+    qrcodeContainer.innerHTML = `<img src="${qrApiUrl}" alt="QR Code" width="180" height="180">`;
+    qrModal.style.display = 'flex';
+});
+
+// 모달 닫기 이벤트들
 closeModalBtn.addEventListener('click', () => {
     qrModal.style.display = 'none';
 });
 
-// 팝업 바깥 어두운 배경을 눌러도 팝업 닫기
 window.addEventListener('click', (e) => {
     if (e.target === qrModal) {
         qrModal.style.display = 'none';
@@ -661,7 +675,6 @@ roomTitleInput.addEventListener("input", async (event) => {
     await updateRoomTitle(event.target.value);
 });
 
-// 실시간 제목 연동 (공통)
 onValue(ref(db, `sharedTimer/${roomId}/roomTitle`), (snapshot) => {
     const data = snapshot.val();
     if (data && data.text) {
@@ -669,9 +682,7 @@ onValue(ref(db, `sharedTimer/${roomId}/roomTitle`), (snapshot) => {
     }
 });
 
-// 모드별 초기화 분기 처리
 if (isViewer) {
-    // [시청자 모드 설정]
     document.querySelector(".container").classList.add("viewer-mode");
     document.querySelector(".share-box").style.display = "none";
     document.querySelector(".buttons").style.display = "none";
@@ -686,7 +697,7 @@ if (isViewer) {
             display.textContent = data.time;
 
             if (data.midAlert && !viewerMidAlertShown) {
-                viewerMidAlertShown = true; // 중복 실행 방지
+                viewerMidAlertShown = true;
                 const message = document.getElementById("midAlertMessage");
                 message.textContent = "중간 알림 시간이 지났습니다.";
                 message.classList.add("show");
@@ -703,8 +714,7 @@ if (isViewer) {
         }
     });
 } else {
-    // [호스트 모드 설정]
-    updateDisplay(); // 호스트 화면만 초기 화면을 포맷에 맞게 00:00:00 세팅
+    updateDisplay();
 }
 </script>
 </body>

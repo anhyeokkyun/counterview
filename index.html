@@ -49,14 +49,14 @@
         line-height: 1;
         font-size: clamp(14px, 1.2vw, 28px);
         order: 8;
-        cursor: pointer; /* 클릭 가능하다는 표시 */
-        text-decoration: underline; /* 밑줄 효과 추가 */
+        cursor: pointer; 
+        text-decoration: underline; 
         color: #b0bec5;
         transition: color 0.2s;
     }
 
     h1:hover {
-        color: #ffffff; /* 마우스 올렸을 때 하얗게 강조 */
+        color: #ffffff; 
     }
 
     #roomTitle {
@@ -315,7 +315,6 @@
         align-items: center;
     }
 
-    /* 공통 모달 스타일 구조 */
     .modal {
         display: none; 
         position: fixed;
@@ -341,12 +340,11 @@
         width: 300px;
     }
 
-    /* README 모달 전용 확장 스타일 (글이 길기 때문에 가로를 넓히고 내부 스크롤 허용) */
     .readme-modal-content {
         width: min(90%, 650px);
         max-height: 80vh;
         overflow-y: auto;
-        text-align: left; /* 마크다운 문서 가독성을 위해 좌측 정렬 */
+        text-align: left; 
         padding: 25px;
     }
 
@@ -386,7 +384,6 @@
 <body>
 
     <div class="container">
-        <!-- 클릭 이벤트를 바인딩할 제목 태그 -->
         <h1 id="readmeTitleBtn">COUNTERVIEW</h1>
         <div id="roomTitle">Room Title</div>
 
@@ -394,7 +391,6 @@
             <input type="text" id="roomTitleInput" placeholder="페이지 제목 입력">
         </div>
 
-        <!-- FINAL -->
         <div class="time-section">
             <div class="section-title">Final</div>
             <div class="time-inputs">
@@ -413,7 +409,6 @@
             </div>
         </div>
 
-        <!-- SPLIT -->
         <div class="time-section">
             <div class="section-title">Split</div>
             <div class="time-inputs mid-alert-inputs">
@@ -458,15 +453,14 @@
         </div>
     </div>
 
-    <!-- 데이터가 동적으로 주입될 비어있는 모달 구조 -->
+    <!-- README 모달 -->
     <div id="readmeModal" class="modal">
         <div class="modal-content readme-modal-content">
             <span class="close-btn" id="closeReadmeModalBtn">&times;</span>
             <div class="readme-body">
-                <!-- 자바스크립트가 ID를 기준으로 이 자리에 글자를 채워 넣습니다 -->
                 <h2 id="jsonTitle" style="margin-top:0; font-size: 22px; text-align: center;"></h2>
                 <p id="jsonSubtitle" style="text-align: center; color: #aaa; margin-bottom: 20px;"></p>
-            
+                
                 <h3 id="jsonFeaturesTitle" style="color: #ffd54f; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 20px; font-size: 18px;"></h3>
                 <ul id="jsonFeatures"></ul>
 
@@ -503,11 +497,12 @@ if (!roomId) {
     window.history.replaceState({}, "", newUrl);
 }
 
-let timerId = null;
-let remainingTime = 0;
-let midAlertTime = 0;
-let midAlertTriggered = false;
-let viewerMidAlertShown = false;
+// === 새로 추가된 타임스탬프 동기화 상태 변수들 ===
+let syncInterval = null;
+let localTimerStatus = "idle"; // "idle", "running", "paused", "finished"
+let currentLeft = 0;           // 현재 남은 시간(초)
+let currentSplit = 0;          // 중간 알림 기준 시간(초)
+let midAlertTriggered = false; // 알람 중복 재생 방지
 
 const display = document.getElementById("timerDisplay");
 const viewerLinkInput = document.getElementById("viewerLink");
@@ -520,7 +515,6 @@ const qrModal = document.getElementById('qrModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const qrcodeContainer = document.getElementById('qrcodeContainer');
 
-// README 모달 제어용 DOM 추가
 const readmeModal = document.getElementById('readmeModal');
 const readmeTitleBtn = document.getElementById('readmeTitleBtn');
 const closeReadmeModalBtn = document.getElementById('closeReadmeModalBtn');
@@ -545,18 +539,6 @@ async function updateRoomTitle(title) {
         await set(ref(db, `sharedTimer/${roomId}/roomTitle`), { text: title });
     }
 }
-    
-async function updateDisplay() {
-    const formatted = formatTime(remainingTime);
-    display.textContent = formatted;
-
-    if (!isViewer) {
-       await set(ref(db, `sharedTimer/${roomId}/current`), {
-           time: formatted,
-           midAlert: midAlertTriggered
-       });
-    }
-}
 
 function getInputSeconds() {
     const hours = parseInt(document.getElementById("hours").value) || 0;
@@ -572,80 +554,151 @@ function getMidAlertSeconds() {
     return (hours * 3600) + (minutes * 60) + seconds;
 }
 
+// 1. Start: 목표 타임스탬프 계산 후 Firebase 전송
 async function startTimer() {
-    if (remainingTime === 0) {
-        remainingTime = getInputSeconds();
-        midAlertTime = getMidAlertSeconds();
-        midAlertTriggered = false;
+    if (isViewer) return;
 
-        if (remainingTime <= 0) {
+    let totalSeconds = 0;
+    let splitSecs = 0;
+
+    if (localTimerStatus === "idle" || localTimerStatus === "finished") {
+        totalSeconds = getInputSeconds();
+        splitSecs = getMidAlertSeconds();
+        if (totalSeconds <= 0) {
             alert("시간을 입력하세요.");
             return;
         }
-        await updateDisplay();
+    } else if (localTimerStatus === "paused") {
+        totalSeconds = currentLeft;
+        splitSecs = currentSplit;
+    } else if (localTimerStatus === "running") {
+        return; // 이미 실행중이면 무시
     }
 
-    if (timerId !== null) return;
+    const endTimeStamp = Date.now() + (totalSeconds * 1000);
 
-    display.classList.remove("finished");
-
-    timerId = setInterval(async () => {
-        remainingTime--;
-
-        if (!midAlertTriggered && midAlertTime > 0 && remainingTime === midAlertTime) {
-            midAlertTriggered = true;
-            playMidAlarm();
-
-            const message = document.getElementById("midAlertMessage");
-            message.textContent = "중간 알림 시간이 지났습니다.";
-            message.classList.add("show");
-
-            setTimeout(() => {
-                message.classList.remove("show");
-                message.textContent = "";
-            }, 5000);
-        }
-
-        await updateDisplay();
-
-        if (remainingTime <= 0) {
-            clearInterval(timerId);
-            timerId = null;
-            remainingTime = 0;
-            await updateDisplay();
-            display.classList.add("finished");
-            playFinalAlarm();
-
-            setTimeout(() => {
-                alert("시간이 종료되었습니다.");
-            }, 1000);
-        }
-    }, 1000);
+    await set(ref(db, `sharedTimer/${roomId}/timerState`), {
+        status: "running",
+        endTime: endTimeStamp,
+        splitTimeSeconds: splitSecs
+    });
 }
 
-function pauseTimer() {
-    clearInterval(timerId);
-    timerId = null;
+// 2. Pause: 현재 남은 시간을 계산하여 Firebase에 저장
+async function pauseTimer() {
+    if (isViewer || localTimerStatus !== "running") return;
+    
+    await set(ref(db, `sharedTimer/${roomId}/timerState`), {
+        status: "paused",
+        savedRemainingTime: currentLeft,
+        splitTimeSeconds: currentSplit
+    });
 }
 
+// 3. Reset: 상태를 idle로 초기화
 async function resetTimer() {
-    clearInterval(timerId);
-    timerId = null;
-    remainingTime = 0;
-    midAlertTime = 0;
-    midAlertTriggered = false;
-    display.textContent = "00:00:00";
-    display.classList.remove("finished");
-
-    await set(ref(db, `sharedTimer/${roomId}/current`), { time: "00:00:00" });
+    if (isViewer) return;
+    
+    await set(ref(db, `sharedTimer/${roomId}/timerState`), {
+        status: "idle"
+    });
 }
 
+function showMidAlertMessage() {
+    const message = document.getElementById("midAlertMessage");
+    message.textContent = "중간 알림 시간이 지났습니다.";
+    message.classList.add("show");
+    setTimeout(() => {
+        message.classList.remove("show");
+        message.textContent = "";
+    }, 5000);
+}
+
+// [핵심] 호스트와 뷰어 공통: Firebase 상태를 수신하여 화면을 그리는 로직
+onValue(ref(db, `sharedTimer/${roomId}/timerState`), (snapshot) => {
+    const state = snapshot.val();
+    
+    // 이전 인터벌 정리 및 UI 초기화
+    clearInterval(syncInterval);
+    display.classList.remove("finished");
+    
+    if (!state || state.status === "idle") {
+        localTimerStatus = "idle";
+        currentLeft = 0;
+        currentSplit = 0;
+        midAlertTriggered = false;
+        display.textContent = "00:00:00";
+        return;
+    }
+
+    localTimerStatus = state.status;
+    currentSplit = state.splitTimeSeconds || 0;
+
+    if (state.status === "paused") {
+        currentLeft = state.savedRemainingTime || 0;
+        display.textContent = formatTime(currentLeft);
+        if (currentLeft > currentSplit) midAlertTriggered = false;
+    } 
+    else if (state.status === "running") {
+        const endTime = state.endTime;
+        
+        // 즉시 화면 1회 갱신
+        updateRunningDisplay(endTime);
+        
+        // 브라우저 백그라운드 스로틀링을 방지하기 위해 0.2초마다 체크(화면은 부드럽게)
+        syncInterval = setInterval(() => {
+            updateRunningDisplay(endTime);
+        }, 200);
+    }
+    else if (state.status === "finished") {
+        display.textContent = "00:00:00";
+        display.classList.add("finished");
+    }
+});
+
+function updateRunningDisplay(endTime) {
+    const now = Date.now();
+    // 목표 시간과 현재 시간의 차이를 통해 남은 초 계산
+    currentLeft = Math.max(0, Math.floor((endTime - now) / 1000));
+    display.textContent = formatTime(currentLeft);
+
+    // 중간 알림 체크 (호스트/뷰어 각각 로컬에서 재생)
+    if (currentSplit > 0 && currentLeft === currentSplit && !midAlertTriggered) {
+        midAlertTriggered = true;
+        playMidAlarm();
+        showMidAlertMessage();
+    }
+
+    // 시간이 다시 늘어났을 경우 알림 트리거 초기화
+    if (currentLeft > currentSplit) {
+        midAlertTriggered = false; 
+    }
+
+    // 종료 시그널
+    if (currentLeft <= 0) {
+        clearInterval(syncInterval);
+        display.classList.add("finished");
+        playFinalAlarm();
+        
+        if (!isViewer) {
+            // 호스트만 종료 상태를 기록하여 뷰어들에게 전파
+            set(ref(db, `sharedTimer/${roomId}/timerState`), { status: "finished" });
+        }
+    }
+}
+
+// Audio API 처리
 let audioContext = null;
 
-function playMidAlarm() {
+// 모바일 브라우저의 오디오 정책 대응 (최초 터치 시 오디오 권한 획득)
+document.addEventListener('pointerdown', () => {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
+}, { once: true });
+
+function playMidAlarm() {
+    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
     for (let i = 0; i < 2; i++) {
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
@@ -664,9 +717,7 @@ function playMidAlarm() {
 }
 
 function playFinalAlarm() {
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
+    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
     for (let i = 0; i < 5; i++) {
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
@@ -709,37 +760,30 @@ closeModalBtn.addEventListener('click', () => {
     qrModal.style.display = 'none';
 });
 
-// 1. README 모달 열기/닫기 스크립트 기능 추가
-// 2. 제목(h1) 클릭 시 JSON 데이터 불러오기 함수 실행
+// JSON README 모달 로직
 readmeTitleBtn.addEventListener('click', () => {
-    // 3. fetch를 통해 같은 폴더에 있는 json 파일을 서버에 요청
     fetch('readme.json')
         .then(response => {
-            if (!response.ok) {
-                throw new Error('JSON 파일을 불러오는 데 실패했습니다.');
-            }
-            return response.json(); // 응답 값을 자바스크립트 객체로 변환
+            if (!response.ok) throw new Error('JSON 파일을 불러오는 데 실패했습니다.');
+            return response.json(); 
         })
         .then(data => {
-            // 4. 일반 텍스트 데이터 매핑
             document.getElementById('jsonTitle').textContent = data.title;
             document.getElementById('jsonSubtitle').textContent = data.subtitle;
             document.getElementById('jsonFeaturesTitle').textContent = data.featuresTitle;
             document.getElementById('jsonTechTitle').textContent = data.techTitle;
             
-            // 5. 배열 데이터(Features) 목록을 <ul> 내부에 <li>로 동적 생성
             const featuresList = document.getElementById('jsonFeatures');
-            featuresList.innerHTML = ''; // 기존 목록이 있다면 초기화
+            featuresList.innerHTML = '';
             data.features.forEach(text => {
                 const li = document.createElement('li');
                 li.style.marginBottom = '4px';
-                li.innerHTML = text.replace(/([^:]+):/, '<strong>$1:</strong>'); // 콜론(:) 앞부분만 볼드 처리
+                li.innerHTML = text.replace(/([^:]+):/, '<strong>$1:</strong>'); 
                 featuresList.appendChild(li);
             });
 
-            // 6. 배열 데이터(Tech Stack) 목록 동적 생성
             const techList = document.getElementById('jsonTechStack');
-            techList.innerHTML = ''; // 초기화
+            techList.innerHTML = '';
             data.techStack.forEach(text => {
                 const li = document.createElement('li');
                 li.style.marginBottom = '4px';
@@ -747,7 +791,6 @@ readmeTitleBtn.addEventListener('click', () => {
                 techList.appendChild(li);
             });
 
-            // 7. 데이터 주입이 완료되면 모달 창 띄우기
             readmeModal.style.display = 'flex';
         })
         .catch(error => {
@@ -756,23 +799,14 @@ readmeTitleBtn.addEventListener('click', () => {
         });
 });
 
-// 8. 닫기 버튼 클릭 시 모달 닫기
 closeReadmeModalBtn.addEventListener('click', () => {
     readmeModal.style.display = 'none';
 });
 
-closeReadmeModalBtn.addEventListener('click', () => {
-    readmeModal.style.display = 'none';
-});
-
-// 모달 바깥 어두운 배경 영역 클릭 시 닫기 핸들러 일괄 조정
+// 모달 바깥 배경 클릭 시 닫기
 window.addEventListener('click', (e) => {
-    if (e.target === qrModal) {
-        qrModal.style.display = 'none';
-    }
-    if (e.target === readmeModal) {
-        readmeModal.style.display = 'none';
-    }
+    if (e.target === qrModal) qrModal.style.display = 'none';
+    if (e.target === readmeModal) readmeModal.style.display = 'none';
 });
 
 roomTitleInput.addEventListener("input", async (event) => {
@@ -786,6 +820,7 @@ onValue(ref(db, `sharedTimer/${roomId}/roomTitle`), (snapshot) => {
     }
 });
 
+// 뷰어 모드 UI 렌더링 세팅
 if (isViewer) {
     document.querySelector(".container").classList.add("viewer-mode");
     document.querySelector(".share-box").style.display = "none";
@@ -794,31 +829,6 @@ if (isViewer) {
     document.querySelectorAll(".time-section").forEach((element) => {
         element.style.display = "none";
     });
-
-    onValue(ref(db, `sharedTimer/${roomId}/current`), (snapshot) => {
-        const data = snapshot.val();
-        if (data && data.time) {
-            display.textContent = data.time;
-
-            if (data.midAlert && !viewerMidAlertShown) {
-                viewerMidAlertShown = true;
-                const message = document.getElementById("midAlertMessage");
-                message.textContent = "중간 알림 시간이 지났습니다.";
-                message.classList.add("show");
-
-                setTimeout(() => {
-                    message.classList.remove("show");
-                    message.textContent = "";
-                }, 5000);
-            }
-
-            if (!data.midAlert) {
-                viewerMidAlertShown = false;
-            }
-        }
-    });
-} else {
-    updateDisplay();
 }
 </script>
 </body>

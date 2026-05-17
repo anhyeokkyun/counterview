@@ -49,6 +49,14 @@
         line-height: 1;
         font-size: clamp(14px, 1.2vw, 28px);
         order: 8;
+        cursor: pointer; /* 클릭 가능하다는 표시 */
+        text-decoration: underline; /* 밑줄 효과 추가 */
+        color: #b0bec5;
+        transition: color 0.2s;
+    }
+
+    h1:hover {
+        color: #ffffff; /* 마우스 올렸을 때 하얗게 강조 */
     }
 
     #roomTitle {
@@ -159,7 +167,6 @@
         animation: blink 1s infinite;
     }
 
-    /* 컨트롤 버튼 박스 */
     .buttons {
         display: flex;
         gap: 6px;
@@ -184,39 +191,36 @@
     .pause-btn { background: #ff9800; }
     .reset-btn { background: #f44336; }
 
-    /* 공유 박스 레이아웃 (세로 길이 맞춤 및 텍스트 확대) */
     .share-box {
         display: flex;
         gap: 6px;
         flex-shrink: 0;
-        min-height: 40px; /* 상단 .buttons와 높이 기조 통일 */
+        min-height: 40px;
         order: 7;
         align-items: center;
     }
 
-    /* URL 인풋창 높이 및 텍스트 크기 확대 */
     #viewerLink {
         flex: 1; 
         min-width: 0;
-        height: 100%; /* 부모 share-box 높이에 꽉 차게 설정 */
+        height: 100%;
         padding: 6px 12px;
         border: none;
         border-radius: 10px;
         background: #444;
         color: white;
-        font-size: clamp(12px, 0.9vw, 18px); /* 높아진 상자에 맞춰 인풋 텍스트 크기 확대 */
+        font-size: clamp(12px, 0.9vw, 18px);
         display: flex;
         align-items: center;
     }
 
-    /* Copy 및 QR 버튼 가로 길이를 동일하게 설정 및 높이 연동 */
     #copyLinkBtn, #showQrBtn {
         flex: 0 0 auto !important;
-        min-width: 70px; /* 두 버튼의 가로 너비를 동일한 최소값으로 통일 */
-        height: 100%; /* 부모 share-box 높이에 꽉 차게 설정 */
+        min-width: 70px;
+        height: 100%;
         padding: 6px 0 !important;
         width: auto !important;
-        font-size: clamp(12px, 0.9vw, 18px); /* 상단 버튼들과 텍스트 크기 통일 */
+        font-size: clamp(12px, 0.9vw, 18px);
         font-weight: bold;
         white-space: nowrap;
         border: none;
@@ -268,12 +272,9 @@
             padding: 0;
         }
         #midAlertMessage { height: 16px; font-size: 11px; }
-        
-        /* 가로모드 시 상단 및 하단 박스 높이 연동 축소 */
         .buttons { gap: 4px; min-height: 30px; }
         .share-box { gap: 4px; min-height: 30px; }
         .buttons button { padding: 4px; font-size: 10px; }
-        
         #viewerLink { padding: 4px 8px; font-size: 10px; }
         #copyLinkBtn, #showQrBtn { min-width: 50px; padding: 4px 0 !important; font-size: 10px; }
     }
@@ -293,12 +294,9 @@
         .time-box label { font-size: 8px; margin-bottom: 0; }
         .time-box input { padding: 2px; font-size: 9px; }
         .timer-display { max-height: 30vh; font-size: min(9vw, 44px); line-height: 0.85; }
-        
-        /* 초소형 화면 대응 */
         .buttons { gap: 2px; min-height: 24px; }
         .share-box { gap: 2px; min-height: 24px; }
         .buttons button { padding: 2px; font-size: 9px; }
-        
         #viewerLink { padding: 2px 6px; font-size: 8px; }
         #copyLinkBtn, #showQrBtn { min-width: 45px; padding: 2px 0 !important; font-size: 8px; }
         #midAlertMessage { height: 10px; font-size: 8px; }
@@ -317,6 +315,7 @@
         align-items: center;
     }
 
+    /* 공통 모달 스타일 구조 */
     .modal {
         display: none; 
         position: fixed;
@@ -341,6 +340,25 @@
         max-width: 90%;
         width: 300px;
     }
+
+    /* README 모달 전용 확장 스타일 (글이 길기 때문에 가로를 넓히고 내부 스크롤 허용) */
+    .readme-modal-content {
+        width: min(90%, 650px);
+        max-height: 80vh;
+        overflow-y: auto;
+        text-align: left; /* 마크다운 문서 가독성을 위해 좌측 정렬 */
+        padding: 25px;
+    }
+
+    .readme-body {
+        font-size: 14px;
+        line-height: 1.6;
+        color: #ddd;
+    }
+    .readme-body h2 { color: #ffd54f; border-bottom: 1px solid #444; padding-bottom: 5px; margin-top: 20px; font-size: 18px;}
+    .readme-body ul { padding-left: 20px; margin: 8px 0; }
+    .readme-body li { margin-bottom: 4px; }
+    .readme-body code { background: #444; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 13px; color: #ff8a80;}
 
     .close-btn {
         position: absolute;
@@ -368,7 +386,8 @@
 <body>
 
     <div class="container">
-        <h1>COUNTERVIEW</h1>
+        <!-- 클릭 이벤트를 바인딩할 제목 태그 -->
+        <h1 id="readmeTitleBtn">COUNTERVIEW</h1>
         <div id="roomTitle">Room Title</div>
 
         <div class="room-title-input-wrap">
@@ -422,7 +441,6 @@
             <button class="reset-btn" id="resetBtn">Reset</button>
         </div>
 
-        <!-- 추가 요구사항 전면 반영 완료 -->
         <div class="share-box">
             <input type="text" id="viewerLink" readonly>
             <button id="copyLinkBtn">Copy</button>
@@ -430,12 +448,40 @@
         </div>
     </div>
 
+    <!-- QR 공유 모달 -->
     <div id="qrModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" id="closeModalBtn">&times;</span>
             <h2>화면 공유 QR 코드</h2>
             <div id="qrcodeContainer"></div>
             <p>스마트폰으로 스캔하면 타이머 화면을 함께 볼 수 있습니다.</p>
+        </div>
+    </div>
+
+    <!-- 새로 추가된 README 문서용 모달 팝업 구조 -->
+    <div id="readmeModal" class="modal">
+        <div class="modal-content readme-modal-content">
+            <span class="close-btn" id="closeReadmeModalBtn">&times;</span>
+            <div class="readme-body">
+                <h2 style="margin-top:0; font-size: 22px; text-align: center;">⏱️ COUNTERVIEW README</h2>
+                <p style="text-align: center; color: #aaa; margin-bottom: 20px;">Firebase Realtime Database 기반 양방향 동기화 웹 타이머</p>
+                
+                <h2>✨ 주요 기능 (Key Features)</h2>
+                <ul>
+                    <li><strong>실시간 타이머 동기화</strong>: 호스트의 제어 상태(시작, 일시정지, 초기화, 잔여 시간)가 뷰어 화면에 무지연 실시간 동동기화됩니다.</li>
+                    <li><strong>중간 알림 기능 (Split)</strong>: 목표 종료 시간 외에 특정 중간 도달 알림 시간을 세팅하여 비프음 사운드와 텍스트 블링크 경고를 줄 수 있습니다.</li>
+                    <li><strong>자체 웹 오디오 시스템</strong>: 무거운 오디오 파일 없이 Web Audio API 브라우저 내장 오실레이터를 조합해 비프음 사운드 알림을 출력합니다.</li>
+                    <li><strong>뷰어 전용 템플릿</strong>: 공유 링크(viewer=1)로 접근 시 복잡한 설정창이 전부 가려지고 초대형 타이머 디스플레이만 노출됩니다.</li>
+                    <li><strong>모바일 반응형 구축</strong>: 기기 노치 스페이스(Safe Area) 방어 및 가로 회전 모드 대응 레이아웃이 적용되었습니다.</li>
+                </ul>
+
+                <h2>🛠️ 기술 스택 (Tech Stack)</h2>
+                <ul>
+                    <li><strong>Frontend</strong>: HTML5, CSS3 (Flexbox, <code>clamp()</code> 반응형 폰트), JavaScript Modules</li>
+                    <li><strong>Backend / DB</strong>: Firebase Realtime Database</li>
+                    <li><strong>API / Built-in</strong>: QR Code Generator API, Web Audio API</li>
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -482,6 +528,11 @@ const roomTitleInput = document.getElementById("roomTitleInput");
 const qrModal = document.getElementById('qrModal');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const qrcodeContainer = document.getElementById('qrcodeContainer');
+
+// README 모달 제어용 DOM 추가
+const readmeModal = document.getElementById('readmeModal');
+const readmeTitleBtn = document.getElementById('readmeTitleBtn');
+const closeReadmeModalBtn = document.getElementById('closeReadmeModalBtn');
 
 const viewerUrl = `${window.location.origin}${window.location.pathname}?viewer=1&room=${roomId}`;
 viewerLinkInput.value = viewerUrl;
@@ -667,9 +718,22 @@ closeModalBtn.addEventListener('click', () => {
     qrModal.style.display = 'none';
 });
 
+// README 모달 열기/닫기 스크립트 기능 추가
+readmeTitleBtn.addEventListener('click', () => {
+    readmeModal.style.display = 'flex';
+});
+
+closeReadmeModalBtn.addEventListener('click', () => {
+    readmeModal.style.display = 'none';
+});
+
+// 모달 바깥 어두운 배경 영역 클릭 시 닫기 핸들러 일괄 조정
 window.addEventListener('click', (e) => {
     if (e.target === qrModal) {
         qrModal.style.display = 'none';
+    }
+    if (e.target === readmeModal) {
+        readmeModal.style.display = 'none';
     }
 });
 

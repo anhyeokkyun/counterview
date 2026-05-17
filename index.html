@@ -182,19 +182,21 @@
     .pause-btn { background: #ff9800; }
     .reset-btn { background: #f44336; }
 
-    /* 공유 박스 레이아웃 최적화 */
+    /* 공유 박스 레이아웃 대폭 수정 */
     .share-box {
         display: flex;
         gap: 6px;
         flex-shrink: 0;
         min-height: 40px;
         order: 7;
+        align-items: center;
     }
 
+    /* URL 인풋창이 남은 가로 공간을 전부 압도적으로 채우도록 설정 */
     #viewerLink {
         flex: 1; 
         min-width: 0;
-        padding: 6px;
+        padding: 10px;
         border: none;
         border-radius: 10px;
         background: #444;
@@ -202,31 +204,22 @@
         font-size: clamp(10px, 0.8vw, 16px);
     }
 
-    #copyLinkBtn {
-        padding: 6px 0;
-        width: 50px; 
-        flex-shrink: 0;
-        border: none;
-        border-radius: 10px;
-        background: #2196f3;
-        color: white;
+    /* 버튼들은 글자 크기에 맞춰 최소한으로 축소되고 절대 확장되지 않음 */
+    #copyLinkBtn, #showQrBtn {
+        flex: 0 0 auto !important; /* 너비 자동 확장 방지 */
+        padding: 10px 16px !important; /* 버튼 내 여백 */
+        width: auto !important; /* 미디어쿼리 고정값 강제 해제 */
         font-size: clamp(11px, 0.9vw, 14px);
         font-weight: bold;
         white-space: nowrap;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
     }
 
-    #showQrBtn {
-        padding: 6px 0;
-        width: 45px; 
-        flex-shrink: 0;
-        border: none;
-        border-radius: 10px;
-        background: #9c27b0;
-        color: white;
-        font-size: clamp(11px, 0.9vw, 14px);
-        font-weight: bold;
-        white-space: nowrap;
-    }
+    #copyLinkBtn { background: #2196f3; }
+    #showQrBtn { background: #9c27b0; }
 
     .finished {
         animation: blink 1s infinite;
@@ -269,8 +262,8 @@
         button { padding: 4px; font-size: 10px; }
         .share-box { gap: 4px; }
         #viewerLink { padding: 4px; font-size: 10px; }
-        #copyLinkBtn { padding: 4px 0; width: 45px; font-size: 10px; }
-        #showQrBtn { padding: 4px 0; width: 40px; font-size: 10px; }
+        /* 미디어 쿼리 내 버튼 강제 고정 width 제거 */
+        #copyLinkBtn, #showQrBtn { padding: 4px 10px !important; font-size: 10px; }
     }
 
     @supports (-webkit-touch-callout: none) {
@@ -291,8 +284,7 @@
         .buttons { gap: 2px; }
         button { padding: 3px; font-size: 9px; }
         #viewerLink { padding: 3px; font-size: 8px; }
-        #copyLinkBtn { padding: 3px 0; width: 40px; font-size: 8px; }
-        #showQrBtn { padding: 3px 0; width: 35px; font-size: 8px; }
+        #copyLinkBtn, #showQrBtn { padding: 3px 8px !important; font-size: 8px; }
         #midAlertMessage { height: 10px; font-size: 8px; }
         .viewer-mode .timer-display { min-height: 55vh; font-size: min(18vw, 120px); }
     }
@@ -511,7 +503,7 @@ function getInputSeconds() {
     const hours = parseInt(document.getElementById("hours").value) || 0;
     const minutes = parseInt(document.getElementById("minutes").value) || 0;
     const seconds = parseInt(document.getElementById("seconds").value) || 0;
-    return (hours * 3600) + (minutes * 60) + seconds; // 오류 수정됨 (+)
+    return (hours * 3600) + (minutes * 60) + seconds;
 }
 
 function getMidAlertSeconds() {

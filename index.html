@@ -191,10 +191,9 @@
         order: 7;
     }
 
-    /* URL 인풋창이 남은 모든 공간을 다 차지하도록 flex-grow 부여 */
     #viewerLink {
         flex: 1; 
-        min-width: 0; /* flex 안에서 input이 부모를 터트리는 현상 방지 */
+        min-width: 0;
         padding: 6px;
         border: none;
         border-radius: 10px;
@@ -203,10 +202,9 @@
         font-size: clamp(10px, 0.8vw, 16px);
     }
 
-    /* 버튼 너비를 기존의 대략 절반 수준으로 축소 및 고정 */
     #copyLinkBtn {
         padding: 6px 0;
-        width: 50px; /* 기존 90px -> 50px 축소 */
+        width: 50px; 
         flex-shrink: 0;
         border: none;
         border-radius: 10px;
@@ -219,7 +217,7 @@
 
     #showQrBtn {
         padding: 6px 0;
-        width: 45px; /* 기존 80px -> 45px 축소 */
+        width: 45px; 
         flex-shrink: 0;
         border: none;
         border-radius: 10px;
@@ -311,7 +309,6 @@
         align-items: center;
     }
 
-    /* 팝업 전체 배경 */
     .modal {
         display: none; 
         position: fixed;
@@ -325,7 +322,6 @@
         align-items: center;
     }
 
-    /* 팝업 하얀색 박스 */
     .modal-content {
         background-color: #222;
         color: #fff;
@@ -338,7 +334,6 @@
         width: 300px;
     }
 
-    /* 닫기 버튼 (X) */
     .close-btn {
         position: absolute;
         right: 15px;
@@ -350,7 +345,6 @@
 
     .close-btn:hover { color: #fff; }
 
-    /* QR 코드 이미지 스타일 */
     #qrcodeContainer img {
         margin: 20px auto;
         border: 10px solid white;
@@ -420,7 +414,6 @@
             <button class="reset-btn" id="resetBtn">Reset</button>
         </div>
 
-        <!-- 텍스트 축약(Copy, QR) 및 공간 할당 최적화 완료 -->
         <div class="share-box">
             <input type="text" id="viewerLink" readonly>
             <button id="copyLinkBtn">Copy</button>
@@ -428,7 +421,6 @@
         </div>
     </div>
 
-    <!-- QR 코드 팝업 모달 -->
     <div id="qrModal" class="modal">
         <div class="modal-content">
             <span class="close-btn" id="closeModalBtn">&times;</span>
@@ -519,7 +511,7 @@ function getInputSeconds() {
     const hours = parseInt(document.getElementById("hours").value) || 0;
     const minutes = parseInt(document.getElementById("minutes").value) || 0;
     const seconds = parseInt(document.getElementById("seconds").value) || 0;
-    return (hours * 3600) + (minutes * 60) seconds;
+    return (hours * 3600) + (minutes * 60) + seconds; // 오류 수정됨 (+)
 }
 
 function getMidAlertSeconds() {

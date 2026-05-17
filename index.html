@@ -659,6 +659,101 @@
         align-items: center;
     }
 
+    /* 팝업 전체 배경 (처음엔 숨김) */
+    .modal {
+        
+        display: none; 
+        
+        position: fixed;
+        
+        z-index: 1000; /* 최상단에 위치 */
+ 
+        left: 0;
+    
+        top: 0;
+    
+        width: 100%;
+    
+        height: 100%;
+    
+        background-color: rgba(0, 0, 0, 0.7); /* 배경을 어둡게 */
+    
+        justify-content: center;
+    
+        align-items: center;
+    }
+
+    /* 팝업 하얀색 박스 */
+    .modal-content {
+    
+        background-color: #222;
+    
+        color: #fff;
+    
+        padding: 30px;
+    
+        border-radius: 15px;
+    
+        text-align: center;
+    
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    
+        position: relative;
+    
+        max-width: 90%;
+    
+        width: 300px;
+    }
+
+    /* 닫기 버튼 (X) */
+    .close-btn {
+    
+        position: absolute;
+    
+        right: 15px;
+    
+        top: 10px;
+    
+        font-size: 28px;
+    
+        cursor: pointer;
+    
+        color: #aaa;
+    }
+
+    .close-btn:hover {
+    
+        color: #fff;
+    }
+
+    /* QR 코드 이미지 스타일 */
+    #qrcodeContainer img {
+    
+        margin: 20px auto;
+    
+        border: 10px solid white; /* QR 코드는 테두리가 하얗게 있어야 인식이 잘 됩니다 */
+    
+        border-radius: 5px;
+    
+        display: block;
+    }
+
+    .modal-content h2 {
+    
+        font-size: 18px;
+    
+        margin-top: 5px;
+    }
+
+    .modal-content p {
+    
+        font-size: 12px;
+    
+        color: #ccc;
+    
+        margin-top: 15px;
+    }
+        
     </style>
 </head>
 
@@ -954,6 +1049,31 @@ const roomTitle =
 const roomTitleInput =
     document.getElementById(
         "roomTitleInput"
+    );
+
+const qrModal = 
+    document.getElementById(
+        'qrModal'
+    );
+    
+const closeModalBtn = 
+    document.getElementById(
+        'closeModalBtn'
+    );
+    
+const qrcodeContainer = 
+    document.getElementById(
+        'qrcodeContainer'
+    );
+    
+const viewerLinkInput = 
+    document.getElementById(
+        'viewerLink'
+    ); // URL이 담긴 인풋창
+    
+const copyLinkBtn = 
+    document.getElementById(
+        'copyLinkBtn'
     );
 
 function formatTime(totalSeconds) {
@@ -1320,26 +1440,38 @@ document
     .getElementById("resetBtn")
     .addEventListener("click", resetTimer);
 
-copyLinkBtn.addEventListener(
+// [기존 Copy Link 버튼 이벤트 리스너]를 아래처럼 수정/확장
+copyLinkBtn.addEventListener('click', () => {
+    // 1. 기존의 클립보드 복사 기능 수행
+    viewerLinkInput.select();
+    navigator.clipboard.writeText(viewerLinkInput.value).then(() => {
+        alert("링크가 복사되었습니다!"); // 기존 알림창 (필요 없으면 제거 가능)
+        
+        // 2. QR 코드 생성 생성 API 호출 (viewerLink의 주소값 활용)
+        const currentUrl = encodeURIComponent(viewerLinkInput.value);
+        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${currentUrl}`;
+        
+        // 3. 팝업 박스 안에 이미지 태그 넣기
+        qrcodeContainer.innerHTML = `<img src="${qrApiUrl}" alt="QR Code" width="180" height="180">`;
+        
+        // 4. 팝업창 열기 (display를 flex로 변경)
+        qrModal.style.display = 'flex';
+    }).catch(err => {
+        console.error('복사 실패:', err);
+    });
+});
 
-    "click",
+// 닫기 버튼(X)을 누르면 팝업 닫기
+closeModalBtn.addEventListener('click', () => {
+    qrModal.style.display = 'none';
+});
 
-    async () => {
-
-        await navigator.clipboard
-            .writeText(viewerUrl);
-
-        copyLinkBtn.textContent =
-            "Copied!";
-
-        setTimeout(() => {
-
-            copyLinkBtn.textContent =
-                "Copy Link";
-
-        }, 1500);
+// 팝업 바깥 어두운 배경을 눌러도 팝업 닫기
+window.addEventListener('click', (e) => {
+    if (e.target === qrModal) {
+        qrModal.style.display = 'none';
     }
-);
+});
 
 roomTitleInput.addEventListener(
 
@@ -1458,6 +1590,17 @@ if (isViewer) {
 
 </script>
 
+<!-- QR 코드 팝업 모달 -->
+<div id="qrModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeModalBtn">&times;</span>
+        <h2>화면 공유 QR 코드</h2>
+        <!-- 이 자리에 QR 이미지가 동적으로 생성됩니다 -->
+        <div id="qrcodeContainer"></div>
+        <p>스마트폰으로 스캔하면 타이머 화면을 함께 볼 수 있습니다.</p>
+    </div>
+</div>
+    
 </body>
 
 </html>
